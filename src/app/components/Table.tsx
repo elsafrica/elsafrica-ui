@@ -55,9 +55,11 @@ const Table = ({
       case 'total_earnings':
         return column.format && column.format(Number(value))
       case 'ack_payment':
-        return <Button variant='contained' color='primary' onClick={() => {}}>Confirm Payment</Button>
+        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='primary' onClick={() => {}}>Confirm Payment</Button>
+      case 'send_email':
+        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='secondary' onClick={() => {}}>Send E-mail</Button>
       case 'isDisconnected':
-        return <Switch color='primary' onClick={() => {}} value={switchValue} onChange={() => {}} />
+        return <Switch color='error' onClick={() => {}} value={switchValue} onChange={() => {}} />
       default:
         return value
     }
@@ -73,6 +75,7 @@ const Table = ({
                 <TableCell
                   key={column.id}
                   align={column.align}
+                  sx={{ fontWeight: 'bold' }}
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
