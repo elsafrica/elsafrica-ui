@@ -1,11 +1,13 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import Table from '@/app/components/Table';
 import { Row } from '@/app/types/data';
+import axios from 'axios';
+import { useQuery } from 'react-query';
 
 interface Column {
   id: 'name' | 'phone1' | 'phone2' | 'location' | 'ip' | 'created_at' | 'bill' | 'total_earnings' | 'status';
@@ -16,9 +18,9 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: 'Customer Name', minWidth: 170 },
+  { id: 'name', label: 'Customer Name', minWidth: 150 },
   { id: 'phone1', label: 'Primary Phone', minWidth: 120, align: 'center' },
-  { id: 'phone2', label: 'Secondary Phone', minWidth: 120, align: 'center' },
+  { id: 'phone2', label: 'Secondary Phone', minWidth: 130, align: 'center' },
   {
     id: 'location',
     label: 'Location/Apartment',
@@ -69,25 +71,78 @@ function createData(
   return { 
     name,
     phone1,
-    phone2,
+    phone2: phone2 || 'N/A',
     location,
     ip,
     created_at: `${moment(created_at).year()}/${moment(created_at).month() + 1}/${moment(created_at).day()}`,
     bill: Number(bill),
     total_earnings: Number(total_earnings),
-    status: Boolean(status),
+    status,
   };
 }
 
-const rows = [
-  createData('John Doe', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000', '18000', 'Active'),
-  createData('Jane Doe', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-05-01T05:06:07', '2000', '18000', 'Due'),
-  createData('Marcus Lee', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000', '18000', 'Active'),
-  createData('Maeve Atkinson', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000', '18000', 'Overdue'),
-  createData('Bryce Ryder', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000', '18000', 'Suspended'),
-];
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function CustomerAccounts() {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+
+  const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
+		users: Array<any>,
+		dataLength: number,
+	}> => {
+		 const data = (await axios.get(`${BASE_URL}/customers/get_customers`, {
+			params: {
+				pageNum: currentPage,
+				rowsPerPage,
+			}
+		})).data;
+		
+		return data;
+	}
+
+	const { isLoading, isError, data } = useQuery({
+		queryKey: [ 'customers', currentPage, rowsPerPage],
+		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+	});
+
+  const checkStatus = (last_payment?: string, isDisconnected?: boolean) : string => {
+    const due = 
+      moment(last_payment)
+      .isAfter(moment(new Date())
+      .subtract(30, 'days'));
+    const overdue = 
+      moment(last_payment)
+      .isAfter(moment(new Date())
+      .subtract(35, 'days'));
+
+    if (isDisconnected) {
+      return 'Suspended';
+    }
+
+    if (overdue) {
+      return 'Overdue';
+    }
+
+    if (due) {
+      return 'Due';
+    }
+
+    return 'Active';
+  }
+
+  const rows = data?.users.map((user) => createData(
+    user?.name, 
+    user?.phone1,
+    user?.location,
+    user?.ip,
+    user?.createdAt,
+    user?.bill?.amount,
+    user?.total_earnings,
+    checkStatus(user?.last_payment, user?.isDisconnected),
+    user?.phone2,
+  )) || [];
+
   return (
     <>
       <Header />
@@ -105,7 +160,14 @@ export default function CustomerAccounts() {
           Customer Accounts
         </Typography>
       </Box>
-      <Table columns={columns} rows={rows}/>
+      <Table
+        columns={columns}
+        rows={rows}
+        page={currentPage}
+        setPageNum={setCurrentPage}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+      />
     </>
   );
 }
