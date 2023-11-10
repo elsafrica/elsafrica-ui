@@ -1,11 +1,18 @@
 'use client'
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useQuery, useQueryClient } from 'react-query';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import moment from 'moment';
 import Table from '@/app/components/Table';
 import { Column } from '@/app/types/data';
+import { Notification } from '@/app/types/notification';
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const columns: Column[] = [
   { id: 'name', label: 'Customer Name', minWidth: 170 },
@@ -62,7 +69,7 @@ function createData(
   phone1: string,
   location: string,
   ip: string,
-  created_at: string,
+  last_payment: string,
   bill: string,
 ): Data {
   return { 
@@ -71,20 +78,127 @@ function createData(
     phone1,
     location,
     ip,
-    last_payment: `${moment(created_at).year()}/${moment(created_at).month() + 1}/${moment(created_at).day()}`,
+    last_payment: `${moment(last_payment).year()}/${moment(last_payment).month() + 1}/${moment(last_payment).day()}`,
     bill: Number(bill),
   };
 }
 
-const rows = [
-  createData('52', 'John Doe', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000'),
-  createData('53', 'Jane Doe', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-05-01T05:06:07', '2000'),
-  createData('54', 'Marcus Lee', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000'),
-  createData('56', 'Maeve Atkinson', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000'),
-  createData('69', 'Bryce Ryder', '+254 06 562725', 'Arkansas', '192.165.72.16', '2010-01-01T05:06:07', '2000'),
-];
-
 function OverdueAccounts() {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [notification, setNotification] = useState<Notification>()
+
+  const queryClient = useQueryClient();
+
+  const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
+		users: Array<any>,
+		dataLength: number,
+	}> => {
+		 const data = (await axios.get(`${BASE_URL}/accounts/overdue`, {
+			params: {
+				pageNum: currentPage,
+				rowsPerPage,
+			}
+		})).data;
+		
+		return data;
+	}
+
+	const { isLoading, isError, data } = useQuery({
+		queryKey: [ 'customers', currentPage, rowsPerPage],
+		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+	});
+
+  const rows = data?.users.map((user) => createData(
+    user?._id,
+    user?.name, 
+    user?.phone1,
+    user?.location,
+    user?.ip,
+    user?.last_payment,
+    user?.bill?.amount,
+  )) || [];
+
+  const sendEmail = async (id: string) => {
+    try {
+      const { status, data } = await axios.get(`${BASE_URL}/customers/send_mail/${id}`);
+
+      setNotification({
+        status: 'success',
+        message: data.message
+      });
+    } catch (error: any) {
+      if (error.response) {
+        setNotification({
+          status: 'error',
+          message: error.response.data.msg,
+        });
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
+
+  const confirmPayment = async (id: string) => {
+    try {
+      const { status, data } = await axios.patch(`${BASE_URL}/customers/accept_payment`, {
+        id,
+      });
+
+      setNotification({
+        status: 'success',
+        message: data.msg
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['customers'] });
+    } catch (error: any) {
+      if (error.response) {
+        setNotification({
+          status: 'error',
+          message: error.response.data.msg,
+        });
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
+
+  const handleNotificationClose = () => setNotification(undefined);
+
+  const activate = async (id: string, activationFlag: boolean) => {
+    try {
+      const { status, data } = await axios.patch(`${BASE_URL}/customers/activate`, {
+        id,
+        deactivate: activationFlag
+      });
+
+      setNotification({
+        status: 'success',
+        message: data.msg
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['customers'] });
+    } catch (error: any) {
+      if (error.response) {
+        setNotification({
+          status: 'error',
+          message: error.response.data.msg,
+        });
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
+
   return (
     <>
       <Header />
@@ -102,7 +216,33 @@ function OverdueAccounts() {
           Customer Accounts
         </Typography>
       </Box>
-      <Table columns={columns} rows={rows}/>
+      <Table
+        columns={columns}
+        rows={rows}
+        rowsPerPage={rowsPerPage}
+        setRowsPerPage={setRowsPerPage}
+        page={currentPage}
+        setPageNum={setCurrentPage}
+        sendEmail={() => {}}
+        confirmPayment={confirmPayment}
+        activate={activate}
+      />
+      <Snackbar
+        autoHideDuration={6000}
+        open={Boolean(notification)}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Alert
+          severity={notification?.status}
+          sx={{
+            width: '100%'
+          }}
+          onClose={handleNotificationClose}
+        >
+          {notification?.message}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
