@@ -11,6 +11,9 @@ import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import { Column, Row } from '../types/data';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 const Table = ({
   columns,
@@ -18,6 +21,7 @@ const Table = ({
   page,
   noOfPages,
   rowsPerPage,
+  isLoading,
   setRowsPerPage,
   setPageNum,
   sendEmail,
@@ -29,6 +33,7 @@ const Table = ({
   page: number,
   noOfPages?: number,
   rowsPerPage: number,
+  isLoading: boolean,
   setRowsPerPage: Dispatch<SetStateAction<number>>,
   setPageNum: Dispatch<SetStateAction<number>>,
   sendEmail?: (id: string) => void,
@@ -58,13 +63,11 @@ const Table = ({
   }
 
   const renderRowCell = (column: Column, value: (number | string | boolean | undefined), userId?: string) => {
-    const switchValue = column.id === 'isDisconnected' && value
+    const switchValue = column.id === 'isDisconnected' && Boolean(value)
 
     switch(column.id) {
       case 'status':
         return <Chip label={value} sx={{ width: '100%' }} color={chipVariant(value)}/>
-      case 'bill':
-          return column.format && column.format(Number(value))
       case 'total_earnings':
         return column.format && column.format(Number(value))
       case 'ack_payment':
@@ -72,10 +75,42 @@ const Table = ({
       case 'send_email':
         return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='secondary' onClick={() => { if(sendEmail) sendEmail(userId || '')}}>Send E-mail</Button>
       case 'isDisconnected':
-        return <Switch color='error' onClick={() => { if(activate) activate(userId || '', !switchValue) }} value={switchValue} onChange={() => {}} />
+        return <Switch color='error' onClick={() => { if(activate) activate(userId || '', !switchValue) }} value={'on'} onChange={() => {}} />
       default:
         return value
     }
+  }
+
+  if (isLoading) {
+    return (
+      <Paper sx={{ 
+        width: '95%', 
+        overflow: 'hidden', 
+        margin: '1rem auto', 
+        padding: '2rem 0',
+        display: 'flex',
+        justifyContent: 'center', 
+        alignItems: 'center' }} elevation={5}>
+        <CircularProgress />
+      </Paper>
+    )
+  }
+
+  if (rows.length < 1) {
+    return (
+      <Paper sx={{ 
+        width: '95%', 
+        overflow: 'hidden', 
+        margin: '1rem auto', 
+        padding: '2rem 0',
+        display: 'flex',
+        justifyContent: 'center', 
+        alignItems: 'center' }} elevation={5}>
+        <Typography component="p" fontWeight="bold">
+          No content available
+        </Typography>
+      </Paper>
+    )
   }
   
   return (
@@ -98,20 +133,20 @@ const Table = ({
           </TableHead>
           <TableBody>
             {rows
-              .map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {renderRowCell(column, value, row.userId)}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+            .map((row) => {
+              return (
+                <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {renderRowCell(column, value, row.userId)}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+          })}
           </TableBody>
         </MuiTable>
       </TableContainer>
