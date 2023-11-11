@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import moment from 'moment';
 import Table from '@/app/components/Table';
-import { Row } from '@/app/types/data';
-import axios from 'axios';
+import { AxiosErrorData, Row } from '@/app/types/data';
+import axios, { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
+import { Notification } from '@/app/types/notification';
 
 interface Column {
   id: 'name' | 'phone1' | 'phone2' | 'location' | 'ip' | 'created_at' | 'bill' | 'total_earnings' | 'status';
@@ -18,9 +21,9 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: 'name', label: 'Customer Name', minWidth: 150 },
-  { id: 'phone1', label: 'Primary Phone', minWidth: 120, align: 'center' },
-  { id: 'phone2', label: 'Secondary Phone', minWidth: 130, align: 'center' },
+  { id: 'name', label: 'Customer Name', minWidth: 120 },
+  { id: 'phone1', label: 'Primary Phone', minWidth: 100, align: 'center' },
+  { id: 'phone2', label: 'Secondary Phone', minWidth: 100, align: 'center' },
   {
     id: 'location',
     label: 'Location/Apartment',
@@ -30,13 +33,13 @@ const columns: Column[] = [
   {
     id: 'ip',
     label: 'IP Address',
-    minWidth: 100,
+    minWidth: 90,
     align: 'center',
   },
   {
     id: 'created_at',
     label: 'Date Joined',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
     format: (value: number) => `${moment(value).year()}-${moment(value).month() + 1}-${moment(value).date()}`,
   },
@@ -45,7 +48,6 @@ const columns: Column[] = [
     label: 'Package',
     minWidth: 80,
     align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'total_earnings',
@@ -75,7 +77,7 @@ function createData(
     location,
     ip,
     created_at: `${moment(created_at).year()}/${moment(created_at).month() + 1}/${moment(created_at).day()}`,
-    bill: Number(bill),
+    bill,
     total_earnings: Number(total_earnings),
     status,
   };
@@ -84,8 +86,9 @@ function createData(
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function CustomerAccounts() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [notification, setNotification] = useState<Notification>()
 
   const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
 		users: Array<any>,
@@ -104,16 +107,29 @@ export default function CustomerAccounts() {
 	const { isLoading, isError, data } = useQuery({
 		queryKey: [ 'customers', currentPage, rowsPerPage],
 		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+    onError(err: AxiosError<AxiosErrorData>) {
+      if(err.response) {
+        setNotification({
+          status: 'error',
+          message: err.response.data.msg
+        });
+      }
+
+      setNotification({
+        status: 'error',
+        message: err.message
+      });
+    },
 	});
 
   const checkStatus = (last_payment?: string, isDisconnected?: boolean) : string => {
     const due = 
       moment(last_payment)
-      .isAfter(moment(new Date())
+      .isSameOrBefore(moment(new Date())
       .subtract(30, 'days'));
     const overdue = 
       moment(last_payment)
-      .isAfter(moment(new Date())
+      .isSameOrBefore(moment(new Date())
       .subtract(35, 'days'));
 
     if (isDisconnected) {
@@ -143,6 +159,8 @@ export default function CustomerAccounts() {
     user?.phone2,
   )) || [];
 
+  const handleNotificationClose = () => setNotification(undefined);
+
   return (
     <>
       <Header />
@@ -161,6 +179,7 @@ export default function CustomerAccounts() {
         </Typography>
       </Box>
       <Table
+        isLoading={isLoading}
         columns={columns}
         rows={rows}
         page={currentPage}
@@ -168,6 +187,22 @@ export default function CustomerAccounts() {
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
       />
+      <Snackbar
+        autoHideDuration={6000}
+        open={Boolean(notification)}
+        onClose={handleNotificationClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Alert
+          severity={notification?.status}
+          sx={{
+            width: '100%'
+          }}
+          onClose={handleNotificationClose}
+        >
+          {notification?.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
