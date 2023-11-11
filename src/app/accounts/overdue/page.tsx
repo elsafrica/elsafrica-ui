@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useQuery, useQueryClient } from 'react-query';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
@@ -9,30 +9,30 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import moment from 'moment';
 import Table from '@/app/components/Table';
-import { Column } from '@/app/types/data';
+import { AxiosErrorData, Column, Row } from '@/app/types/data';
 import { Notification } from '@/app/types/notification';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const columns: Column[] = [
-  { id: 'name', label: 'Customer Name', minWidth: 170 },
+  { id: 'name', label: 'Customer Name', minWidth: 120 },
   { id: 'phone1', label: 'Primary Phone', minWidth: 120, align: 'center' },
   {
     id: 'location',
     label: 'Location/Apartment',
-    minWidth: 170,
+    minWidth: 120,
     align: 'center',
   },
   {
     id: 'ip',
     label: 'IP Address',
-    minWidth: 100,
+    minWidth: 90,
     align: 'center',
   },
   {
     id: 'last_payment',
     label: 'Last Paid',
-    minWidth: 100,
+    minWidth: 70,
     align: 'center',
     format: (value: number) => `${moment(value).year()}-${moment(value).month() + 1}-${moment(value).date()}`,
   },
@@ -41,7 +41,6 @@ const columns: Column[] = [
     label: 'Package',
     minWidth: 80,
     align: 'center',
-    format: (value: number) => value.toLocaleString('en-US'),
   },
   {
     id: 'send_email',
@@ -53,16 +52,6 @@ const columns: Column[] = [
   { id: 'isDisconnected', label: 'Disconnect', minWidth: 80, align: 'center' },
 ];
 
-interface Data {
-  userId: string,
-  name: string;
-  phone1: string;
-  location: string;
-  ip: string;
-  last_payment: string;
-  bill: number;
-}
-
 function createData(
   userId: string,
   name: string,
@@ -71,7 +60,7 @@ function createData(
   ip: string,
   last_payment: string,
   bill: string,
-): Data {
+): Row {
   return { 
     userId,
     name,
@@ -79,12 +68,12 @@ function createData(
     location,
     ip,
     last_payment: `${moment(last_payment).year()}/${moment(last_payment).month() + 1}/${moment(last_payment).day()}`,
-    bill: Number(bill),
+    bill,
   };
 }
 
 function OverdueAccounts() {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [notification, setNotification] = useState<Notification>()
 
@@ -107,6 +96,19 @@ function OverdueAccounts() {
 	const { isLoading, isError, data } = useQuery({
 		queryKey: [ 'customers', currentPage, rowsPerPage],
 		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+    onError: (error: AxiosError<AxiosErrorData>) => {
+      if (error.response) {
+        setNotification({
+          status: 'error',
+          message: error.response.data.msg
+        });
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message
+      });
+    }
 	});
 
   const rows = data?.users.map((user) => createData(
@@ -116,7 +118,7 @@ function OverdueAccounts() {
     user?.location,
     user?.ip,
     user?.last_payment,
-    user?.bill?.amount,
+    user?.bill?.package,
   )) || [];
 
   const sendEmail = async (id: string) => {
@@ -217,6 +219,7 @@ function OverdueAccounts() {
         </Typography>
       </Box>
       <Table
+        isLoading={isLoading}
         columns={columns}
         rows={rows}
         rowsPerPage={rowsPerPage}
