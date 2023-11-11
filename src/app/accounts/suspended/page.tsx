@@ -215,7 +215,7 @@ function SuspendedAccounts() {
           component='h1'
           textAlign='start'
         >
-          Customer Accounts
+          Suspended Accounts
         </Typography>
       </Box>
       <Table

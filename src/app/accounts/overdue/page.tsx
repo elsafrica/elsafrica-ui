@@ -215,7 +215,7 @@ function OverdueAccounts() {
           component='h1'
           textAlign='start'
         >
-          Customer Accounts
+          Overdue Accounts
         </Typography>
       </Box>
       <Table

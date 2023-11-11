@@ -216,7 +216,7 @@ function DueAccounts() {
           component='h1'
           textAlign='start'
         >
-          Customer Accounts
+          Due Accounts
         </Typography>
       </Box>
       <Table
