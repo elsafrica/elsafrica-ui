@@ -12,14 +12,13 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import Link from 'next/link';
 
 const Header = () => {
   const pages = [
     {
       name: 'New Customer',
-      to: '/customers/new_customer'
+      to: '/customers/new'
     }, {
       name: 'Customer Accounts',
       to: '/customers/accounts'
