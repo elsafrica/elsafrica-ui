@@ -26,7 +26,7 @@ const TextField = (props : FieldHookConfig<string> & FieldProps) => {
       error={Boolean(meta.touched) && Boolean(meta.error)}
       label={props.label}
       required={Boolean(props.required)}
-      helperText={meta.error}
+      helperText={meta.touched && meta.error}
       { ...field }
     />
   )
