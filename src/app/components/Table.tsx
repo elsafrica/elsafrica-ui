@@ -45,7 +45,7 @@ const Table = ({
   activate?: (id: string, switchValue: boolean) => void,
   confirmPayment?: (id: string) => void,
   setDelete?: (id: string) => void,
-  update?: (data?: { id?: string, name?: string, amount?: string }) => void
+  update?: (data?: Row) => void
 }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPageNum(newPage);
@@ -70,7 +70,7 @@ const Table = ({
   }
 
   const renderRowCell = (column: Column, value: (number | string | boolean | undefined), data?: Row) => {
-    const switchValue = column.id === 'isDisconnected' && Boolean(value)
+    const switchValue = Boolean(value)
 
     switch(column.id) {
       case 'status':
@@ -82,16 +82,22 @@ const Table = ({
       case 'send_email':
         return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='secondary' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send E-mail</Button>
       case 'isDisconnected':
-        return <Switch color='error' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} value={'on'} onChange={() => {}} />
+        return <Switch color='error' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} checked={switchValue} onChange={() => {}} />
       case 'actions':
         return (
           <Box>
-            <IconButton onClick={() => { if(update) update({ id: data?.userId, name: data?.name, amount: String(data?.amount) })}}>
-              <EditIcon sx={{ fontSize: '1.2rem' }} color='info'/>
-            </IconButton>
-            <IconButton onClick={() => { if(setDelete) setDelete(data?.userId || '')}}>
-              <DeleteIcon sx={{ fontSize: '1.2rem' }} color='error'/>
-            </IconButton>
+            { 
+              typeof update === 'function' &&
+              <IconButton onClick={() => {update(data)}}>
+                <EditIcon sx={{ fontSize: '1.2rem' }} color='info'/>
+              </IconButton>
+            }
+            {
+              typeof setDelete === 'function' &&
+              <IconButton onClick={() => {setDelete(data?.userId || '')}}>
+                <DeleteIcon sx={{ fontSize: '1.2rem' }} color='error'/>
+              </IconButton>
+            }
           </Box>
         )
       default:
