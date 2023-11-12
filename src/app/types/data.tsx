@@ -26,6 +26,8 @@ export interface Row {
   bill?: string;
   amount?: number;
   actions?: string;
+  email?: string;
+  package_name?: string;
 }
 
 export interface AxiosErrorData {
