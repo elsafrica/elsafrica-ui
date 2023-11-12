@@ -14,6 +14,9 @@ import { Column, Row } from '../types/data';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const Table = ({
   columns,
@@ -26,7 +29,9 @@ const Table = ({
   setPageNum,
   sendEmail,
   activate,
-  confirmPayment
+  confirmPayment,
+  setDelete,
+  update,
 } : {
   columns: Array<Column>
   rows: Array<Row>,
@@ -38,7 +43,9 @@ const Table = ({
   setPageNum: Dispatch<SetStateAction<number>>,
   sendEmail?: (id: string) => void,
   activate?: (id: string, switchValue: boolean) => void,
-  confirmPayment?: (id: string) => void
+  confirmPayment?: (id: string) => void,
+  setDelete?: (id: string) => void,
+  update?: (data?: { id?: string, name?: string, amount?: string }) => void
 }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPageNum(newPage);
@@ -62,7 +69,7 @@ const Table = ({
     }
   }
 
-  const renderRowCell = (column: Column, value: (number | string | boolean | undefined), userId?: string) => {
+  const renderRowCell = (column: Column, value: (number | string | boolean | undefined), data?: Row) => {
     const switchValue = column.id === 'isDisconnected' && Boolean(value)
 
     switch(column.id) {
@@ -71,11 +78,22 @@ const Table = ({
       case 'total_earnings':
         return column.format && column.format(Number(value))
       case 'ack_payment':
-        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(userId || '') }}>Confirm Payment</Button>
+        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm Payment</Button>
       case 'send_email':
-        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='secondary' onClick={() => { if(sendEmail) sendEmail(userId || '')}}>Send E-mail</Button>
+        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='secondary' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send E-mail</Button>
       case 'isDisconnected':
-        return <Switch color='error' onClick={() => { if(activate) activate(userId || '', !switchValue) }} value={'on'} onChange={() => {}} />
+        return <Switch color='error' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} value={'on'} onChange={() => {}} />
+      case 'actions':
+        return (
+          <Box>
+            <IconButton onClick={() => { if(update) update({ id: data?.userId, name: data?.name, amount: String(data?.amount) })}}>
+              <EditIcon sx={{ fontSize: '1.2rem' }} color='info'/>
+            </IconButton>
+            <IconButton onClick={() => { if(setDelete) setDelete(data?.userId || '')}}>
+              <DeleteIcon sx={{ fontSize: '1.2rem' }} color='error'/>
+            </IconButton>
+          </Box>
+        )
       default:
         return value
     }
@@ -123,7 +141,7 @@ const Table = ({
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  sx={{ fontWeight: 'bold' }}
+                  sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '1rem' }}
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -140,7 +158,7 @@ const Table = ({
                     const value = row[column.id];
                     return (
                       <TableCell key={column.id} align={column.align}>
-                        {renderRowCell(column, value, row.userId)}
+                        {renderRowCell(column, value, row)}
                       </TableCell>
                     );
                   })}
