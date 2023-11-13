@@ -20,10 +20,9 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import TextField from '@/app/components/TextField';
 import { object, string } from 'yup';
 
-interface FormikValues {
-  id?: string;
-  name?: string;
-  amount?: string;
+interface FormikValues extends Row {
+  name: string;
+  amount?: number;
 }
 
 const columns: Column[] = [
@@ -148,7 +147,7 @@ export default function CustomerAccounts() {
 
   const onUpdateSubmit = async (values: FormikValues | undefined, helpers: FormikHelpers<FormikValues>) => {
     try {
-      const { data } = await axios.patch(`${BASE_URL}/packages/update`, Object.assign({ id: update?.id, ...values }));
+      const { data } = await axios.patch(`${BASE_URL}/packages/update`, Object.assign({ id: update?.userId, ...values }));
       setNotification({
         status: 'success',
         message: data.msg
@@ -176,7 +175,7 @@ export default function CustomerAccounts() {
   const onDelete = (id: string) => setDeleteId(id);
   const onCloseConfirm = () => setDeleteId(undefined);
 
-  const onUpdate = (data?: { id?: string, name?: string, amount?: string}) => setUpdate(data);
+  const onUpdate = (data?: Row) => setUpdate(data);
   const onCloseUpdate = () => setUpdate(undefined);
 
   return (
@@ -221,7 +220,7 @@ export default function CustomerAccounts() {
         onClose={onCloseUpdate}
       >
         <Formik
-          initialValues={update || { id: '' }}
+          initialValues={update || { name: '' }}
           validationSchema={validator}
           onSubmit={onUpdateSubmit}
           enableReinitialize

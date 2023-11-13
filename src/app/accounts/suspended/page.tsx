@@ -49,7 +49,7 @@ const columns: Column[] = [
     align: 'center',
   },
   { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 160, align: 'center' },
-  { id: 'isDisconnected', label: 'Disconnect', minWidth: 80, align: 'center' },
+  { id: 'isDisconnected', label: 'Connect', minWidth: 80, align: 'center' },
 ];
 
 function createData(
@@ -60,6 +60,7 @@ function createData(
   ip: string,
   last_payment: string,
   bill: string,
+  isDisconnected: string,
 ): Row {
   return { 
     userId,
@@ -69,6 +70,7 @@ function createData(
     ip,
     last_payment: `${moment(last_payment).year()}/${moment(last_payment).month() + 1}/${moment(last_payment).day()}`,
     bill,
+    isDisconnected,
   };
 }
 
@@ -119,6 +121,7 @@ function SuspendedAccounts() {
     user?.ip,
     user?.last_payment,
     user?.bill?.package,
+    user?.isDisconnected,
   )) || [];
 
   const sendEmail = async (id: string) => {
