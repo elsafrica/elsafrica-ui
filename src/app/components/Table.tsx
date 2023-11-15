@@ -17,6 +17,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import WhatsApp from '@mui/icons-material/WhatsApp';
 
 const Table = ({
   columns,
@@ -80,7 +81,7 @@ const Table = ({
       case 'ack_payment':
         return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm Payment</Button>
       case 'send_email':
-        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='secondary' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send E-mail</Button>
+        return <Button startIcon={<WhatsApp />} variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send Message</Button>
       case 'isDisconnected':
         return <Switch color='error' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} checked={switchValue} onChange={() => {}} />
       case 'actions':
@@ -147,7 +148,7 @@ const Table = ({
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '1rem' }}
+                  sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.5rem', px: '1rem' }}
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
