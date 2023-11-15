@@ -19,14 +19,14 @@ import TextField, { TelTextField } from '@/app/components/TextField';
 import Select from '@/app/components/Select';
 
 const columns: Column[] = [
-  { id: 'name', label: 'Customer Name', minWidth: 120 },
-  { id: 'phone1', label: 'Primary Phone', minWidth: 100, align: 'center' },
-  { id: 'phone2', label: 'Secondary Phone', minWidth: 100, align: 'center' },
+  { id: 'name', label: 'Customer Name', minWidth: 120, align: 'left' },
+  { id: 'phone1', label: 'Primary Phone', minWidth: 120, align: 'left' },
+  { id: 'phone2', label: 'Secondary Phone', minWidth: 125, align: 'left' },
   {
     id: 'location',
     label: 'Location/Apartment',
-    minWidth: 170,
-    align: 'center',
+    minWidth: 120,
+    align: 'left',
   },
   {
     id: 'ip',
