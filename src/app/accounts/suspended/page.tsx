@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios, { AxiosError } from 'axios';
 import { useQuery, useQueryClient } from 'react-query';
 import Header from '@/app/components/Header';
@@ -11,6 +11,7 @@ import moment from 'moment';
 import Table from '@/app/components/Table';
 import { AxiosErrorData, Column, Row } from '@/app/types/data';
 import { Notification } from '@/app/types/notification';
+import { Context } from '@/app/providers/context';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -80,6 +81,7 @@ function SuspendedAccounts() {
   const [notification, setNotification] = useState<Notification>()
 
   const queryClient = useQueryClient();
+  const context = useContext(Context);
 
   const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
 		users: Array<any>,
@@ -124,13 +126,20 @@ function SuspendedAccounts() {
     user?.isDisconnected,
   )) || [];
 
-  const sendEmail = async (id: string) => {
+  const sendMessage = async (id: string) => {
     try {
-      const { status, data } = await axios.get(`${BASE_URL}/customers/send_mail/${id}`);
+      const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
+        id,
+        isSuspending: true,
+      }, {
+        headers: {
+          Authorization: `Bearer ${context.authToken}`
+        }
+      });
 
       setNotification({
         status: 'success',
-        message: data.message
+        message: data.msg
       });
     } catch (error: any) {
       if (error.response) {
@@ -229,7 +238,7 @@ function SuspendedAccounts() {
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}
-        sendEmail={() => {}}
+        sendEmail={sendMessage}
         confirmPayment={confirmPayment}
         activate={activate}
       />
