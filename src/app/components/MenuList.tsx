@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { lightGreen } from '@mui/material/colors';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 interface Link {
   name: string;
@@ -106,7 +107,7 @@ export default function MenuListComposition({
                   onKeyDown={handleListKeyDown}
                 >
                   {
-                    list.map((item: Link) => <MenuItem sx={{ color: pathname.includes(item.to) ? lightGreen[500] : 'black' }} key={item.to} onClick={handleClose} href={item.to}>{item.name}</MenuItem>)
+                    list.map((item: Link) => <Link key={item.to} href={item.to} style={{ textDecoration: 'none', color: 'unset' }}><MenuItem sx={{ color: pathname.includes(item.to) ? lightGreen[500] : 'black' }} onClick={handleClose} >{item.name}</MenuItem></Link>)
                   }
                 </MenuList>
               </ClickAwayListener>
