@@ -13,24 +13,49 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
+import MenuListComposition from './MenuList';
 
 const Header = () => {
   const pages = [
     {
-      name: 'New Customer',
-      to: '/customers/new'
-    }, {
-      name: 'Customer Accounts',
-      to: '/customers/accounts'
-    }, {
-      name: 'Due Accounts',
-      to: '/accounts/due'
-    }, {
-      name: 'Overdue Accounts',
-      to: '/accounts/overdue'
-    }, {
-      name: 'Suspended Accounts',
-      to: '/accounts/suspended'
+      name: 'Customer',
+      linkContains: 'customer',
+      items: [
+        {
+          name: 'New Customer',
+          to: '/customers/new'
+        }, {
+          name: 'Customer Accounts',
+          to: '/customers/accounts'
+        },
+      ]
+    },
+    {
+      name: 'Account Status',
+      linkContains: 'account',
+      items: [
+        {
+          name: 'Due Accounts',
+          to: '/accounts/due'
+        }, {
+          name: 'Overdue Accounts',
+          to: '/accounts/overdue'
+        },
+        {
+          name: 'Suspended Accounts',
+          to: '/accounts/suspended'
+        }
+      ]
+    },
+    {
+      name: 'WhatsApp',
+      linkContains: 'whatsapp',
+      items: [
+        {
+          name: 'WhatsApp Login',
+          to: '/whatsapp_login'
+        },
+      ]
     }
   ];
   const settings = [
@@ -110,7 +135,7 @@ const Header = () => {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              {pages.map((page) => (
+              {/* {pages.map((page) => (
                 <Link href={page.to} key={page.name} style={{ textDecoration: 'none', color: 'black' }}>
                   <MenuItem key={page.name} onClick={handleCloseNavMenu} sx={{
                     width: { xs: '250px' }
@@ -118,7 +143,7 @@ const Header = () => {
                     <Typography textAlign="center">{page.name}</Typography>
                   </MenuItem>
                 </Link>
-              ))}
+              ))} */}
             </Menu>
           </Box>
           <Typography
@@ -141,14 +166,7 @@ const Header = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', paddingRight: '2rem' } }} justifyContent='flex-end'>
             {pages.map((page) => (
-              <Link href={page.to} key={page.name} style={{ textDecoration: 'none', color: 'black' }}>
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page.name}
-                </Button>
-              </Link>
+              <MenuListComposition key={page.name} parentName={page.name} linkContains={page.linkContains} list={page.items}/>
             ))}
           </Box>
 
