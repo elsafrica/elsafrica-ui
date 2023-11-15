@@ -15,7 +15,7 @@ import Modal from '@/app/components/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import { Button, DialogActions, DialogContent } from '@mui/material';
-import TextField from '@/app/components/TextField';
+import TextField, { TelTextField } from '@/app/components/TextField';
 import Select from '@/app/components/Select';
 
 const columns: Column[] = [
@@ -319,8 +319,8 @@ export default function CustomerAccounts() {
                   >
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="firstName" label='Customer First Name' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="lastName" label='Customer Last Name' required />
-                    <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
-                    <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="phone2" label='Secondary Phone' />
+                    <TelTextField value={values.phone1} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
+                    <TelTextField value={values.phone2} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone2" label='Secondary Phone' />
                     <TextField sx={{ width: { md: '100%', lg: '100%' }}} name="email" label='Email' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="location" label='Location/Apartment' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="ip" label='IP Address' required />
