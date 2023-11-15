@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import Themify from './utils/theme'
-import QueryProvider from './utils/react-query'
+import Themify from './providers/theme'
+import QueryProvider from './providers/react-query'
+import ContextProvider from './providers/context'
 
 export const metadata: Metadata = {
   title: 'Elsafrica Group',
@@ -15,11 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <QueryProvider>
-        <Themify>
-          <body>{children}</body>
-        </Themify>
-      </QueryProvider>
+      <ContextProvider>
+        <QueryProvider>
+          <Themify>
+            <body>{children}</body>
+          </Themify>
+        </QueryProvider>
+      </ContextProvider>
     </html>
   )
 }
