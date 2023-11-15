@@ -26,7 +26,7 @@ const Header = () => {
           to: '/customers/new'
         }, {
           name: 'Customer Accounts',
-          to: '/customers/accounts'
+          to: '/customers/list'
         },
       ]
     },
