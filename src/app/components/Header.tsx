@@ -56,6 +56,34 @@ const Header = () => {
           to: '/whatsapp_login'
         },
       ]
+    },
+    {
+      name: 'Assets',
+      linkContains: 'assets',
+      items: [
+        {
+          name: 'Create Asset',
+          to: '/assets/new'
+        },
+        {
+          name: 'List Assets',
+          to: '/assets/list'
+        },
+      ]
+    },
+    {
+      name: 'Packages',
+      linkContains: 'packages',
+      items: [
+        {
+          name: 'Create Package',
+          to: '/masters/packages/new'
+        },
+        {
+          name: 'List Packages',
+          to: '/masters/packages/list'
+        },
+      ]
     }
   ];
   const settings = [
