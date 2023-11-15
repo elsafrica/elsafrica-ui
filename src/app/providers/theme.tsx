@@ -1,8 +1,34 @@
 'use client'
 import React from 'react';
-import { lightGreen, lightBlue, yellow } from '@mui/material/colors'
+import { lightGreen, green, yellow } from '@mui/material/colors'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+declare module "@mui/material/styles" {
+  interface Palette {
+    whatsapp: {
+      main: string;
+      dark?: string;
+      light?: string;
+      contrastText?: string;
+    };
+  }
+  interface PaletteOptions {
+    whatsapp: {
+      main: string;
+      dark?: string;
+      light?: string;
+      contrastText?: string;
+    };
+  }
+}
+
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    whatsapp: true;
+  }
+}
+
+const { palette } = createTheme();
 const theme = createTheme({
   palette: {
     primary: {
@@ -14,6 +40,10 @@ const theme = createTheme({
     warning: {
       main: yellow[800],
       contrastText: '#000'
+    },
+    whatsapp: {
+      main: '#2bb741',
+      contrastText: '#fff',
     }
   },
 });
