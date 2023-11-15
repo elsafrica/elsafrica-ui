@@ -45,12 +45,12 @@ const columns: Column[] = [
   },
   {
     id: 'send_email',
-    label: 'Send E-mail',
-    minWidth: 120,
+    label: 'Send Message',
+    minWidth: 150,
     align: 'center',
   },
   { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 160, align: 'center' },
-  { id: 'isDisconnected', label: 'Connect', minWidth: 80, align: 'center' },
+  { id: 'isDisconnected', label: 'Connect', minWidth: 40, align: 'center' },
 ];
 
 function createData(
