@@ -33,3 +33,9 @@ export interface Row {
 export interface AxiosErrorData {
   msg: string;
 }
+
+export interface User {
+  id: string;
+  phoneNo: string;
+  email?: string;
+}
