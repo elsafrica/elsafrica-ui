@@ -44,11 +44,9 @@ const SignIn = () => {
       });
 
       updateAuthToken(data.token);
-      updateUser({ email: data.user.email, id: data.user.id, phoneNo: '' });
+      updateUser({ email: data.user.email, id: data.user.id, phoneNo: '', userType: data.user.userType });
 
-      helpers.resetForm();
-
-      router.push('/customers/list');
+      router.push('/customers/new');
       } catch (error: any) {
       if (error.response) {
         return setNotification({
