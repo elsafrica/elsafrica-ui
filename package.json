@@ -15,6 +15,7 @@
     "@mui/material": "^5.14.17",
     "axios": "^1.6.0",
     "formik": "^2.4.5",
+    "jwt-decode": "^4.0.0",
     "moment": "^2.29.4",
     "mui-tel-input": "^4.0.1",
     "next": "14.0.1",
