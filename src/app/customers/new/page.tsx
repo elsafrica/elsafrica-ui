@@ -14,6 +14,8 @@ import Select from '@/app/components/Select';
 import { Notification } from '@/app/types/notification';
 import { Alert, Snackbar } from '@mui/material';
 import { Context } from '@/app/providers/context';
+import { useAuthenticate } from '@/app/helpers/useAuth';
+import Loader from '@/app/components/Loader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -33,6 +35,8 @@ const NewCustomer = () => {
   const [notification, setNotification] = useState<Notification>();
 
   const { authToken } = useContext(Context);
+  const { isAuthenticated } = useAuthenticate(authToken);
+
   const axios = AxiosInstance.initInstance(authToken);
 
   const fetchPackages = async () : Promise<{
@@ -73,7 +77,7 @@ const NewCustomer = () => {
     ip: string()
       .test({
         name: 'ip_address_test',
-        test: (value: string | undefined) => /^(\.\d\d\d$)|(\.\d\d)$/.test(value || ''),
+        test: (value: string | undefined) => /^(\.\d\d\d$)|(\.\d\d$)/.test(value || ''),
         message: 'The value you have entered is not a valid IP address, use the format .72 or .192'
       })
       .required('Please fill out this field.'),
@@ -113,6 +117,8 @@ const NewCustomer = () => {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+
+  if(!isAuthenticated) return <Loader />;
 
   return (
     <>
