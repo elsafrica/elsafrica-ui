@@ -100,6 +100,8 @@ interface FormikValues extends Row {
   location?: string;
   ip?: string;
   email?: string;
+  customAmount?: string;
+  package_name?: string;
 }
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -128,11 +130,21 @@ export default function CustomerAccounts() {
       .email('Please enter a valid e-mail.')
       .required('Please fill out this field.'),
     ip: string()
+      .test({
+        name: 'ip_address_test',
+        test: (value: string | undefined) => /^(\.\d\d\d$)|(\.\d\d)$/.test(value || ''),
+        message: 'The value you have entered is not a valid IP address, use the format .72 or .192'
+      })
       .required('Please fill out this field.'),
     location: string()
       .required('Please fill out this field.'),
-    package_name: string()
+    package: string()
       .required('Please fill out this field.'),
+    customAmount: string()
+      .when('package', (values, schema) => {
+        if(values[0] === 'Custom') return schema.required('Please fill out this field.');
+        return schema;
+      }),
   });
 
   const onUpdateSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
@@ -326,7 +338,10 @@ export default function CustomerAccounts() {
                     display='flex'
                     sx={{
                       flexDirection: { xs: 'column', md: 'row' },
-                      margin: 'auto',
+                      margin: {
+                        xs: 'auto -1rem',
+                        md: 'auto'
+                      },
                       flexWrap: { md: 'wrap' },
                       justifyContent: { md: 'space-between' }
                     }}
@@ -339,14 +354,15 @@ export default function CustomerAccounts() {
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="location" label='Location/Apartment' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="ip" label='IP Address' required />
                     <Select
-                      sx={{ width: { md: '100%', lg: '100%' }}}
+                      sx={{ width: { md: '48%', lg: '48%' }}}
                       label='Package' 
                       value={values.package_name || ''} 
-                      values={packages?.packages?.map((item: { name: string, amount: string }) => item.name) || []} 
+                      values={packages?.packages?.concat([{ name: 'Custom'}]).map((item: { name: string, amount: string }) => item.name) || []} 
                       onChange={(value) => {setFieldValue('package_name', value)}}
                       isError={Boolean(getFieldMeta('package_name') && errors.package_name)}
                       error={errors.package_name}
                     />
+                    { values.package_name === 'Custom' && <TextField sx={{ width: { md: '48%', lg: '48%' }, margin: { xs: '1rem 0 0', md: '0' }}} name="customAmount" label='Custom Amount' required />}
                   </Box>
                 </DialogContent>
                 <DialogActions>
