@@ -38,7 +38,6 @@ const columns: Column[] = [
     label: 'Date Created',
     minWidth: 70,
     align: 'center',
-    format: (value: number) => `${moment(value).year()}-${moment(value).month() + 1}-${moment(value).date()}`,
   },
   { id: 'actions', label: 'Actions', minWidth: 40, align: 'center' },
 ];
@@ -58,7 +57,7 @@ function createData(
     user_name,
     location,
     mac_address,
-    created_at: `${moment(created_at).year()}/${moment(created_at).month() + 1}/${moment(created_at).day()}`,
+    created_at: `${moment(created_at).format('MMM Do YYYY')}`,
     purpose,
   };
 }

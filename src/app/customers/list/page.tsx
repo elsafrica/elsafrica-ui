@@ -43,7 +43,6 @@ const columns: Column[] = [
     label: 'Date Joined',
     minWidth: 70,
     align: 'center',
-    format: (value: number) => `${moment(value).year()}-${moment(value).month() + 1}-${moment(value).date()}`,
   },
   {
     id: 'bill',
@@ -83,7 +82,7 @@ function createData(
     phone2: phone2 || 'N/A',
     location,
     ip,
-    created_at: `${moment(created_at).year()}/${moment(created_at).month() + 1}/${moment(created_at).day()}`,
+    created_at: `${moment(created_at).format('MMM Do YYYY')}`,
     bill,
     total_earnings: Number(total_earnings),
     status,

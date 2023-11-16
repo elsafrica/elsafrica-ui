@@ -38,7 +38,6 @@ const columns: Column[] = [
     label: 'Last Paid',
     minWidth: 70,
     align: 'center',
-    format: (value: number) => `${moment(value).year()}-${moment(value).month() + 1}-${moment(value).date()}`,
   },
   {
     id: 'bill',
@@ -71,7 +70,7 @@ function createData(
     phone1,
     location,
     ip,
-    last_payment: `${moment(last_payment).year()}/${moment(last_payment).month() + 1}/${moment(last_payment).day()}`,
+    last_payment: `${moment(last_payment).format('MMM Do YYYY')}`,
     bill,
   };
 }

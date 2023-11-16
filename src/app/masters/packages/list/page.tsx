@@ -59,7 +59,7 @@ function createData(
     userId,
     name,
     amount,
-    created_at: `${moment(created_at).year()}/${moment(created_at).month() + 1}/${moment(created_at).day()}`
+    created_at: `${moment(created_at).format('MMM Do YYYY')}`
   };
 }
 
