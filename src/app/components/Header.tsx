@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useContext } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
 import MenuListComposition from './MenuList';
+import { ContextUpdater } from '../providers/context';
 
 const Header = () => {
   const pages = [
@@ -92,6 +93,7 @@ const Header = () => {
       to: '/sign_in'
     }
   ];
+  const { updateAuthToken } = useContext(ContextUpdater);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -221,7 +223,7 @@ const Header = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <Link href={setting.to} key={setting.name} style={{ textDecoration: 'none', color: 'black' }}>
+                <Link href={setting.to} onClick={() => {if(setting.name === 'Logout') updateAuthToken('')}} key={setting.name} style={{ textDecoration: 'none', color: 'black' }}>
                   <MenuItem onClick={handleCloseUserMenu}>
                     <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
