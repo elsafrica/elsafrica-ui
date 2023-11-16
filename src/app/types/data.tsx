@@ -41,4 +41,5 @@ export interface User {
   id: string;
   phoneNo: string;
   email?: string;
+  userType?: string;
 }
