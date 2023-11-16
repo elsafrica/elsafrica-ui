@@ -26,6 +26,7 @@ interface FormikValues {
   ip: string;
   package: string;
   email: string;
+  customAmount: string;
 }
 
 const NewCustomer = () => {
@@ -70,11 +71,21 @@ const NewCustomer = () => {
     email: string()
       .required('Please fill out this field.'),
     ip: string()
+      .test({
+        name: 'ip_address_test',
+        test: (value: string | undefined) => /^(\.\d\d\d$)|(\.\d\d)$/.test(value || ''),
+        message: 'The value you have entered is not a valid IP address, use the format .72 or .192'
+      })
       .required('Please fill out this field.'),
     location: string()
       .required('Please fill out this field.'),
     package: string()
       .required('Please fill out this field.'),
+    customAmount: string()
+      .when('package', (values, schema) => {
+        if(values[0] === 'Custom') return schema.required('Please fill out this field.');
+        return schema;
+      }),
   });
 
   const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
@@ -145,7 +156,8 @@ const NewCustomer = () => {
                 email: '',
                 location: '',
                 ip: '',
-                package: ''
+                package: '',
+                customAmount: ''
               }}
               validationSchema={validator}
               onSubmit={onSubmit}
@@ -168,18 +180,19 @@ const NewCustomer = () => {
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="lastName" label='Customer Last Name' required />
                       <TelTextField value={values.phone1} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
                       <TelTextField value={values.phone2} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone2" label='Secondary Phone' />
-                      <TextField sx={{ width: { md: '100%', lg: '100%' }}} name="email" label='Email' required />
+                      <TextField sx={{ width: { md: '100%', lg: '100%' }}} name="email" label='Email' />
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="location" label='Location/Apartment' required />
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="ip" label='IP Address' required />
                       <Select
-                        sx={{ width: { md: '100%', lg: '100%' }}}
+                        sx={{ width: { md: '48%', lg: '48%' }}}
                         label='Package' 
                         value={values.package} 
-                        values={data?.packages?.map((item: { name: string, amount: string }) => item.name) || []} 
+                        values={data?.packages?.concat([{ name: 'Custom' }]).map((item: { name: string, amount: string }) => item.name) || []} 
                         onChange={(value) => {setFieldValue('package', value)}}
                         isError={Boolean(getFieldMeta('package') && errors.package)}
                         error={errors.package}
                       />
+                      { values.package === 'Custom' && <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="customAmount" label='Custom Amount' required />}
                     </Box>
                     <Button variant='contained' type='submit' sx={{ margin: { xs: '1rem 0', md: '0 2rem'} }}>Onboard Customer</Button>
                   </Form>
