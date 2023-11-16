@@ -35,24 +35,18 @@ const NewAsset = () => {
     name: string()
       .required('Please fill out this field.'),
     belongsTo: string()
-      // .test({
-      //   name: 'ip_test',
-      //   test: (value: string = '') => {
-      //     console.log(/\[0-9][0-9]/.test(value))
-      //     return /[.][0-9]^3/.test(value)
-      //   },
-      //   message: 'The value you have entered is not a valid IP'
-      // })
+      .test({
+        name: 'ip_test',
+        test: (value: string = '') => /^(\.\d\d\d$)|(\.\d\d)$/.test(value),
+        message: 'The value you have entered is not a valid IP, use the format .72 or .192'
+      })
       .required('Please fill out this field.'),
     macAddress: string()
-      // .test({
-      //   name: 'mac_address_test',
-      //   test: (value: string = '') => {
-      //     console.log(/\[0-9][0-9]/.test(value))
-      //     return /[.][0-9]^3/.test(value)
-      //   },
-      //   message: 'The value you have entered is not a valid IP'
-      // })
+      .test({
+        name: 'mac_address_test',
+        test: (value: string = '') => /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(value),
+        message: 'The value you have entered is not a valid MAC address'
+      })
       .required('Please fill out this field.'),
     purpose: string(),
     location: string()
@@ -146,7 +140,7 @@ const NewAsset = () => {
                     >
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="name" label='Asset Name' required />
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="belongsTo" label='Customer IP Address' required />
-                      <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="macAddress" label='Mac Address' required />
+                      <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="macAddress" label='MAC Address' required />
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="location" label='Location' required />
                       <TextField sx={{ width: { md: '100%', lg: '100%' }}} name="purpose" label='Purpose' />
                     </Box>
