@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -8,15 +8,19 @@ import Alert from '@mui/material/Alert';
 import moment from 'moment';
 import Table from '@/app/components/Table';
 import { AxiosErrorData, Column, Row } from '@/app/types/data';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useQuery, useQueryClient } from 'react-query';
 import { Notification } from '@/app/types/notification';
 import Modal from '@/app/components/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import { Button, DialogActions, DialogContent } from '@mui/material';
+import { Button, CircularProgress, DialogActions, DialogContent } from '@mui/material';
 import TextField, { TelTextField } from '@/app/components/TextField';
 import Select from '@/app/components/Select';
+import { Context } from '@/app/providers/context';
+import AxiosInstance  from '@/app/services/axios';
+import { useAuthorize } from '@/app/helpers/useAuth';
+import Loader from '@/app/components/Loader';
 
 const columns: Column[] = [
   { id: 'name', label: 'Customer Name', minWidth: 120, align: 'left' },
@@ -106,7 +110,11 @@ export default function CustomerAccounts() {
   const [notification, setNotification] = useState<Notification>();
   const [update, setUpdate] = useState<FormikValues>();
 
+  const { authToken } = useContext(Context);
+  const { isAuthorized } = useAuthorize(authToken);
+
   const queryClient = useQueryClient();
+  const axios = AxiosInstance.initInstance(authToken);
 
   const validator = object({
     firstName: string()
@@ -265,6 +273,12 @@ export default function CustomerAccounts() {
   };
 
   const onCloseUpdate = () => setUpdate(undefined);
+
+  if(!isAuthorized) {
+    return (
+      <Loader />
+    )
+  }
 
   return (
     <>

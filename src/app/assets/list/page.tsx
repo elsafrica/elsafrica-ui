@@ -8,12 +8,14 @@ import Alert from '@mui/material/Alert';
 import moment from 'moment';
 import Table from '@/app/components/Table';
 import { AxiosErrorData, Column, Row } from '@/app/types/data';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useQuery, useQueryClient } from 'react-query';
 import { Notification } from '@/app/types/notification';
-import { object, string } from 'yup';
 import ConfrimBox from '@/app/components/ConfirmBox';
 import { Context } from '@/app/providers/context';
+import { useAuthorize } from '@/app/helpers/useAuth';
+import AxiosInstance  from '@/app/services/axios';
+import Loader from '@/app/components/Loader';
 
 const columns: Column[] = [
   { id: 'name', label: 'Asset Name', minWidth: 120, align: 'left' },
@@ -70,21 +72,20 @@ export default function CustomerAccounts() {
   const [deleteId, setDeleteId] = useState<string>();
 
   const queryClient = useQueryClient();
-  const context = useContext(Context);
+  const { authToken } = useContext(Context);
+  const { isAuthorized } = useAuthorize(authToken);
+  const axios = AxiosInstance.initInstance(authToken);
 
   const fetchAssets = async (currentPage: number, rowsPerPage: number) : Promise<{
 		assets: Array<any>,
 		dataLength: number,
 	}> => {
-		 const data = (await axios.get(`${BASE_URL}/assets/get`, {
+    const data = (await axios.get(`${BASE_URL}/assets/get`, {
 			params: {
 				pageNum: currentPage,
 				rowsPerPage,
-			},
-      headers: {
-        Authorization: `Bearer ${context.authToken}`
-      }
-		},)).data;
+			}
+    })).data;
 		
 		return data;
 	}
@@ -119,11 +120,7 @@ export default function CustomerAccounts() {
 
   const onConfirmDelete = async () => {
     try {
-      const { data } = await axios.delete(`${BASE_URL}/assets/delete/${deleteId}`, {
-        headers: {
-          Authorization: `Bearer ${context.authToken}`
-        }
-      });
+      const { data } = await axios.delete(`${BASE_URL}/assets/delete/${deleteId}`);
 
       setNotification({
         status: 'success',
@@ -152,6 +149,8 @@ export default function CustomerAccounts() {
 
   const onDelete = (id: string) => setDeleteId(id);
   const onCloseConfirm = () => setDeleteId(undefined);
+
+  if(!isAuthorized) return <Loader />;
 
   return (
     <>

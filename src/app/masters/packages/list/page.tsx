@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -8,7 +8,8 @@ import Alert from '@mui/material/Alert';
 import moment from 'moment';
 import Table from '@/app/components/Table';
 import { AxiosErrorData, Column, Row } from '@/app/types/data';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import AxiosInstance  from '@/app/services/axios';
 import { useQuery, useQueryClient } from 'react-query';
 import { Notification } from '@/app/types/notification';
 import ConfrimBox from '@/app/components/ConfirmBox';
@@ -19,6 +20,9 @@ import Modal from '@/app/components/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import TextField from '@/app/components/TextField';
 import { object, string } from 'yup';
+import { Context } from '@/app/providers/context';
+import { useAuthorize } from '@/app/helpers/useAuth';
+import Loader from '@/app/components/Loader';
 
 interface FormikValues extends Row {
   name: string;
@@ -69,6 +73,10 @@ export default function CustomerAccounts() {
   const [update, setUpdate] = useState<FormikValues>();
 
   const queryClient = useQueryClient();
+  const { authToken } = useContext(Context);
+  const { isAuthorized } = useAuthorize(authToken);
+
+  const axios = AxiosInstance.initInstance(authToken);
 
   const validator = object({
     amount: string()
@@ -177,6 +185,8 @@ export default function CustomerAccounts() {
 
   const onUpdate = (data?: Row) => setUpdate(data);
   const onCloseUpdate = () => setUpdate(undefined);
+
+  if(!isAuthorized) return <Loader />;
 
   return (
     <>

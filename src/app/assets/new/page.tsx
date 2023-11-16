@@ -1,6 +1,5 @@
 'use client'
 import React, { useState, useContext } from 'react'
-import axios from 'axios';
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -11,6 +10,9 @@ import Header from '@/app/components/Header';
 import { Notification } from '@/app/types/notification';
 import { Alert, Snackbar } from '@mui/material';
 import { Context } from '@/app/providers/context';
+import { useAuthorize } from '@/app/helpers/useAuth';
+import AxiosInstance  from '@/app/services/axios';
+import Loader from '@/app/components/Loader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -23,8 +25,11 @@ interface FormikValues {
 }
 
 const NewAsset = () => {
+  const { authToken } = useContext(Context);
+  const { isAuthorized } = useAuthorize(authToken);
+  const axios = AxiosInstance.initInstance(authToken);
+
   const [notification, setNotification] = useState<Notification>();
-  const context = useContext(Context);
 
   const validator = object({
     name: string()
@@ -56,11 +61,7 @@ const NewAsset = () => {
 
   const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
     try {
-      const { data } = await axios.post(`${BASE_URL}/assets/create`, values, {
-        headers: {
-          Authorization: `Bearer ${context.authToken}`
-        }
-      });
+      const { data } = await axios.post(`${BASE_URL}/assets/create`, values);
       setNotification({
         status: 'success',
         message: data.msg
@@ -83,6 +84,8 @@ const NewAsset = () => {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+
+  if(!isAuthorized) return <Loader />;
 
   return (
     <>

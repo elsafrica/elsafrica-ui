@@ -1,6 +1,6 @@
 'use client'
-import React, { useState } from 'react'
-import axios from 'axios';
+import React, { useContext, useState } from 'react'
+import AxiosInstance  from '@/app/services/axios';
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -10,6 +10,9 @@ import { object, string } from 'yup';
 import Header from '@/app/components/Header';
 import { Notification } from '@/app/types/notification';
 import { Alert, Snackbar } from '@mui/material';
+import { Context } from '@/app/providers/context';
+import { useAuthorize } from '@/app/helpers/useAuth';
+import Loader from '@/app/components/Loader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -19,7 +22,11 @@ interface FormikValues {
 }
 
 const NewPackage = () => {
-  const [notification, setNotification] = useState<Notification>()
+  const [notification, setNotification] = useState<Notification>();
+
+  const { authToken } = useContext(Context);
+  const axios = AxiosInstance.initInstance(authToken);
+  const { isAuthorized } = useAuthorize(authToken);
 
   const validator = object({
     amount: string()
@@ -53,6 +60,8 @@ const NewPackage = () => {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+
+  if(!isAuthorized) return <Loader />;
 
   return (
     <>

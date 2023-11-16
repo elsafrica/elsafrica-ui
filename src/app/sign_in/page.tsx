@@ -9,7 +9,9 @@ import { object, string } from 'yup';
 import axios from 'axios';
 import { Alert, Snackbar } from '@mui/material';
 import { Notification } from '../types/notification';
-import { ContextUpdater } from '../providers/context';
+import { Context, ContextUpdater } from '../providers/context';
+import { useRouter } from 'next/navigation';
+import { useAuthenticate } from '../helpers/useAuth';
 
 interface FormikValues {
   email: string;
@@ -19,8 +21,11 @@ interface FormikValues {
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const SignIn = () => {
+  const { authToken } = useContext(Context);
+  const { isAuthenticated } = useAuthenticate(authToken);
   const { updateUser, updateAuthToken } = useContext(ContextUpdater);
   const [notification, setNotification] = useState<Notification>();
+  const router = useRouter();
   
   //Form validator
   const validator = object({
@@ -42,6 +47,8 @@ const SignIn = () => {
       updateUser({ email: data.user.email, id: data.user.id, phoneNo: '' });
 
       helpers.resetForm();
+
+      router.push('/customers/list');
       } catch (error: any) {
       if (error.response) {
         return setNotification({
@@ -58,6 +65,8 @@ const SignIn = () => {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+
+  if(isAuthenticated) return router.push('/customers/new');
 
   return (
     <>

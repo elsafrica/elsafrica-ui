@@ -10,8 +10,10 @@ import { Context, ContextUpdater } from '../providers/context';
 import QRCode from 'react-qr-code';
 import Button from '@mui/material/Button';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
+import AxiosInstance  from '../services/axios';
+import { useAuthorize } from '../helpers/useAuth';
+import Loader from '../components/Loader';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -19,8 +21,10 @@ export default function CustomerAccounts() {
   const [notification, setNotification] = useState<Notification>();
   const [loading, setLoading] = useState(false);
 
-  const context = useContext(Context);
+  const { authToken, qrCode } = useContext(Context);
   const { updateQRCode } = useContext(ContextUpdater);
+  const axios = AxiosInstance.initInstance(authToken);
+  const { isAuthorized } = useAuthorize(authToken);
 
   const handleNotificationClose = () => setNotification(undefined);
 
@@ -29,11 +33,7 @@ export default function CustomerAccounts() {
     setLoading(true);
 
     try {
-      const { data } = await axios.get(`${BASE_URL}/messages/init_client`, {
-        headers: {
-          Authorization: `Bearer ${context.authToken}`
-        }
-      });
+      const { data } = await axios.get(`${BASE_URL}/messages/init_client`);
 
       setNotification({
         status: 'success',
@@ -53,6 +53,8 @@ export default function CustomerAccounts() {
       })
     }
   }
+
+  if(!isAuthorized) return <Loader />;
 
   return (
     <>
@@ -80,7 +82,7 @@ export default function CustomerAccounts() {
           variant='contained'
           onClick={requestQRCode}
           startIcon={<WhatsAppIcon />}
-          disabled={!Boolean(context.qrCode) && loading}
+          disabled={!Boolean(qrCode) && loading}
         >
           Request QR Code
         </Button>
@@ -91,11 +93,11 @@ export default function CustomerAccounts() {
           }}
         >
           { 
-            typeof context.qrCode === 'string' && Boolean(context.qrCode) ?
+            typeof qrCode === 'string' && Boolean(qrCode) ?
             <QRCode
             size={256}
             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-            value={context.qrCode}
+            value={qrCode}
             viewBox={`0 0 256 256`}
           />
           : loading ?

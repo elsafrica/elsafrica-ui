@@ -1,7 +1,8 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useQuery } from 'react-query'
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import AxiosInstance  from '@/app/services/axios';
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography';
 import { Formik, Form, FormikHelpers } from 'formik';
@@ -12,6 +13,7 @@ import Header from '@/app/components/Header';
 import Select from '@/app/components/Select';
 import { Notification } from '@/app/types/notification';
 import { Alert, Snackbar } from '@mui/material';
+import { Context } from '@/app/providers/context';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -27,7 +29,10 @@ interface FormikValues {
 }
 
 const NewCustomer = () => {
-  const [notification, setNotification] = useState<Notification>()
+  const [notification, setNotification] = useState<Notification>();
+
+  const { authToken } = useContext(Context);
+  const axios = AxiosInstance.initInstance(authToken);
 
   const fetchPackages = async () : Promise<{
 		packages: Array<any>,

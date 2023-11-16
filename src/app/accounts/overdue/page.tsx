@@ -1,6 +1,6 @@
 'use client'
 import React, { useContext, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { useQuery, useQueryClient } from 'react-query';
 import Header from '@/app/components/Header';
 import Box from '@mui/material/Box';
@@ -12,6 +12,9 @@ import Table from '@/app/components/Table';
 import { AxiosErrorData, Column, Row } from '@/app/types/data';
 import { Notification } from '@/app/types/notification';
 import { Context } from '@/app/providers/context';
+import AxiosInstance  from '@/app/services/axios';
+import Loader from '@/app/components/Loader';
+import { useAuthorize } from '@/app/helpers/useAuth';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -79,7 +82,9 @@ function OverdueAccounts() {
   const [notification, setNotification] = useState<Notification>()
 
   const queryClient = useQueryClient();
-  const context = useContext(Context);
+  const { authToken } = useContext(Context);
+  const { isAuthorized } = useAuthorize(authToken);
+  const axios = AxiosInstance.initInstance(authToken);
 
   const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
 		users: Array<any>,
@@ -127,10 +132,6 @@ function OverdueAccounts() {
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
         id
-      }, {
-        headers: {
-          Authorization: `Bearer ${context.authToken}`
-        }
       });
 
       setNotification({
@@ -208,6 +209,8 @@ function OverdueAccounts() {
       });
     }
   }
+
+  if(!isAuthorized) return <Loader />;
 
   return (
     <>
