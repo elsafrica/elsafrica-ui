@@ -34,9 +34,9 @@ export const ContextUpdater = React.createContext<ContextUpdater>({
 
 const ContextProvider = ({ children } : { children: React.ReactNode }) => {
   // const [socket, setSocket] = useState<Socket>();
-  const storageAuthToken = localStorage.getItem('authToken');
-  const storageQRCode = localStorage.getItem('qr_code');
-  const storageUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const storageAuthToken = typeof window !== 'undefined' && localStorage.getItem('authToken');
+  const storageQRCode = typeof window !== 'undefined' && localStorage.getItem('qr_code');
+  const storageUser = typeof window !== 'undefined' && JSON.parse(localStorage.getItem('user') || '{}');
   
   const [authToken, setAuthToken] = useState<string>(storageAuthToken || '');
   const [qrCode, setQrCode] = useState<string>(storageQRCode || '')
