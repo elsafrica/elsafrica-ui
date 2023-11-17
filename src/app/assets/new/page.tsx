@@ -8,11 +8,19 @@ import Button from '@mui/material/Button';
 import { object, string } from 'yup';
 import Header from '@/app/components/Header';
 import { Notification } from '@/app/types/notification';
-import { Alert, Snackbar } from '@mui/material';
+import Alert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormLabel from '@mui/material/FormLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import Snackbar from '@mui/material/Snackbar';
 import { Context } from '@/app/providers/context';
 import { useAuthorize } from '@/app/helpers/useAuth';
 import AxiosInstance  from '@/app/services/axios';
 import Loader from '@/app/components/Loader';
+import Select from '@/app/components/Select';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -22,6 +30,9 @@ interface FormikValues {
   macAddress: string;
   purpose: string;
   location: string;
+  assetPrice: string;
+  assetType: string;
+  isForCompany: string;
 }
 
 const NewAsset = () => {
@@ -41,16 +52,26 @@ const NewAsset = () => {
         message: 'The value you have entered is not a valid IP, use the format .72 or .192'
       })
       .required('Please fill out this field.'),
+    assetType: string()
+      .required('Please select a value'),
     macAddress: string()
-      .test({
-        name: 'mac_address_test',
-        test: (value: string = '') => /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(value),
-        message: 'The value you have entered is not a valid MAC address'
-      })
+      .when('assetType', (value, schema) => {
+        if(value[0]?.toLocaleLowerCase() === 'other')
+          return schema
+            .required('Please fill out this field')
+            .test({
+              name: 'mac_address_test',
+              test: (value: string = '') => /^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(value),
+              message: 'The value you have entered is not a valid MAC address'
+            });      
+        return schema;
+      }),
+    assetPrice: string()
       .required('Please fill out this field.'),
-    purpose: string(),
     location: string()
       .required('Please fill out this field.'),
+    purpose: string(),
+    isForCompany: string(),
   });
 
   const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
@@ -119,8 +140,11 @@ const NewAsset = () => {
                 name: '',
                 belongsTo: '',
                 macAddress: '',
+                assetType: '',
+                assetPrice: '',
                 purpose: '',
                 location: '',
+                isForCompany: '',
               }}
               validationSchema={validator}
               onSubmit={onSubmit}
@@ -140,11 +164,32 @@ const NewAsset = () => {
                     >
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="name" label='Asset Name' required />
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="belongsTo" label='Customer IP Address' required />
-                      <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="macAddress" label='MAC Address' required />
+                      <Select
+                        sx={{ width: { md: '48%', lg: '48%' }}}
+                        label='Type' 
+                        value={values.assetType} 
+                        values={['Switch', 'Other']} 
+                        onChange={(value) => {setFieldValue('assetType', value)}}
+                        isError={Boolean(getFieldMeta('assetType').touched && errors.assetType)}
+                        error={errors.assetType}
+                      />
+                      <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="macAddress" label='MAC Address' />
                       <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="location" label='Location' required />
+                      <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="assetPrice" label='Price' required />
                       <TextField sx={{ width: { md: '100%', lg: '100%' }}} name="purpose" label='Purpose' />
+                      <FormControl>
+                        <FormLabel>Asset belongs to the company?</FormLabel>
+                        <RadioGroup row>
+                          <FormControlLabel label='Yes' control={<Radio value='yes' onChange={(e) => setFieldValue('isForCompany', e.target.value)}/>} />
+                          <FormControlLabel label='No' control={<Radio value='no' onChange={(e) => setFieldValue('isForCompany', e.target.value)}/>} />
+                        </RadioGroup>
+                        { 
+                          errors.isForCompany &&
+                          <FormHelperText>Please select a value</FormHelperText>
+                        }
+                      </FormControl>    
                     </Box>
-                    <Button variant='contained' type='submit' sx={{ margin: { xs: '1rem 0', md: '0 2rem'} }}>Register</Button>
+                    <Button variant='contained' type='submit' sx={{ margin: { xs: '1rem 0', md: '0.75rem 2rem'} }}>Register</Button>
                   </Form>
                 )
               }
