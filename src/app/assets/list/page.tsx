@@ -34,6 +34,27 @@ const columns: Column[] = [
     align: 'center',
   },
   {
+    id: 'assetPrice',
+    label: 'Price',
+    minWidth: 90,
+    align: 'center',
+    format(value: number) {
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'Ksh',
+        minimumFractionDigits: 0,
+      });
+
+      return formatter.format(value)
+    },
+  },
+  {
+    id: 'isForCompany',
+    label: 'Company Asset',
+    minWidth: 20,
+    align: 'center',
+  },
+  {
     id: 'created_at',
     label: 'Date Created',
     minWidth: 70,
@@ -50,15 +71,19 @@ function createData(
   mac_address: string,
   created_at: string,
   purpose: string,
+  isForCompany: string,
+  assetPrice: string,
 ): Row {
   return { 
     userId,
     name,
     user_name,
     location,
-    mac_address,
+    mac_address: mac_address || 'N/A',
     created_at: `${moment(created_at).format('MMM Do YYYY')}`,
     purpose,
+    isForCompany: Boolean(isForCompany) ? 'Yes' : 'No',
+    assetPrice,
   };
 }
 
@@ -78,6 +103,7 @@ export default function CustomerAccounts() {
   const fetchAssets = async (currentPage: number, rowsPerPage: number) : Promise<{
 		assets: Array<any>,
 		dataLength: number,
+    totalInvestment: number,
 	}> => {
     const data = (await axios.get(`${BASE_URL}/assets/get`, {
 			params: {
@@ -115,6 +141,8 @@ export default function CustomerAccounts() {
     asset?.mac_address,
     asset?.createdAt,
     asset?.purpose,
+    asset?.isForCompany,
+    asset?.assetPrice,
   )) || [];
 
   const onConfirmDelete = async () => {
@@ -154,7 +182,13 @@ export default function CustomerAccounts() {
   return (
     <>
       <Header />
-      <Box>
+      <Box
+        display='flex'
+        flexDirection='row'
+        justifyContent='space-between'
+        alignItems='center'
+        paddingRight='2rem'
+      >
         <Typography
           sx={{
             color: '#91d000',
@@ -167,6 +201,33 @@ export default function CustomerAccounts() {
         >
           Customer Accounts
         </Typography>
+        <Box
+          display='flex'
+          flexDirection='row'
+          alignItems='center'
+        >
+          <Typography
+            component='p'
+            fontWeight='bold'
+            fontSize='1rem'
+            color='Highlight'
+            marginRight='0.75rem'
+          >
+            Total Investment
+          </Typography>
+          <Typography
+            component='span'
+            fontSize='0.75rem'
+            fontWeight='medium'
+            color='InfoText'
+          >
+            {new Intl.NumberFormat('en-US', {
+              currency: 'KSH',
+              minimumFractionDigits: 0,
+              style: 'currency'
+            }).format(data?.totalInvestment || 0)}
+          </Typography>
+        </Box>
       </Box>
       <Table
         isLoading={isLoading}

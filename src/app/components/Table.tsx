@@ -78,6 +78,8 @@ const Table = ({
         return <Chip label={value} sx={{ width: '100%' }} color={chipVariant(value)}/>
       case 'total_earnings':
         return column.format && column.format(Number(value))
+      case 'assetPrice':
+        return column.format && column.format(Number(value))
       case 'ack_payment':
         return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm Payment</Button>
       case 'send_email':
