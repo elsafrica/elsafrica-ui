@@ -24,12 +24,12 @@ import Loader from '@/app/components/Loader';
 
 const columns: Column[] = [
   { id: 'name', label: 'Customer Name', minWidth: 120, align: 'left' },
-  { id: 'phone1', label: 'Primary Phone', minWidth: 120, align: 'left' },
-  { id: 'phone2', label: 'Secondary Phone', minWidth: 125, align: 'left' },
+  { id: 'phone1', label: 'Primary Phone', minWidth: 100, align: 'left' },
+  { id: 'phone2', label: 'Secondary Phone', minWidth: 100, align: 'left' },
   {
     id: 'location',
     label: 'Location/Apartment',
-    minWidth: 120,
+    minWidth: 80,
     align: 'left',
   },
   {
@@ -41,7 +41,7 @@ const columns: Column[] = [
   {
     id: 'created_at',
     label: 'Date Joined',
-    minWidth: 70,
+    minWidth: 80,
     align: 'center',
   },
   {
