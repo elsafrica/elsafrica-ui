@@ -15,9 +15,24 @@ import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
 import MenuListComposition from './MenuList';
 import { ContextUpdater } from '../providers/context';
+import { Bubblegum_Sans as Bubblegum } from 'next/font/google'
+
+interface Link {
+  name: string;
+  to: string;
+}
+
+interface Page {
+  name: string;
+  linkContains: string;
+  items: Link[]
+}
+
+const montserrat = Bubblegum({ subsets: ['latin'], weight: '400' });
 
 const Header = () => {
-  const pages = [
+
+  const pages: Page[] = [
     {
       name: 'Customer',
       linkContains: 'customer',
@@ -25,10 +40,15 @@ const Header = () => {
         {
           name: 'New Customer',
           to: '/customers/new'
-        }, {
+        }, 
+        {
           name: 'Customer Accounts',
           to: '/customers/list'
         },
+        {
+          name: 'Customer Uploads',
+          to: '/customers/upload'
+        }
       ]
     },
     {
@@ -127,13 +147,15 @@ const Header = () => {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontWeight: 700,
+              fontWeight: 1200,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              fontSize: '2rem'
             }}
+            className={montserrat.className}
           >
-            LOGO
+            Elsafrica Networks
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -186,13 +208,15 @@ const Header = () => {
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontFamily: 'monospace',
-              fontWeight: 700,
+              fontWeight: 1200,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+              fontSize: '2rem'
             }}
+            className={montserrat.className}
           >
-            LOGO
+            Elsafrica Networks
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', paddingRight: '2rem' } }} justifyContent='flex-end'>
             {pages.map((page) => (
