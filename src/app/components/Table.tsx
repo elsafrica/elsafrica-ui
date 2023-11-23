@@ -75,17 +75,17 @@ const Table = ({
 
     switch(column.id) {
       case 'status':
-        return <Chip label={value} sx={{ width: '100%' }} color={chipVariant(value)}/>
+        return <Chip label={value} sx={{ width: '100%' }} size='small' color={chipVariant(value)}/>
       case 'total_earnings':
         return column.format && column.format(Number(value))
       case 'assetPrice':
         return column.format && column.format(Number(value))
       case 'ack_payment':
-        return <Button variant='contained' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm Payment</Button>
+        return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm Payment</Button>
       case 'send_email':
-        return <Button startIcon={<WhatsApp />} variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send Message</Button>
+        return <Button startIcon={<WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send Message</Button>
       case 'isDisconnected':
-        return <Switch color='error' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} checked={switchValue} onChange={() => {}} />
+        return <Switch color='error' size='small' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} checked={switchValue} onChange={() => {}} />
       case 'actions':
         return (
           <Box>
@@ -150,7 +150,7 @@ const Table = ({
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.5rem', px: '1rem' }}
+                  sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.25rem', fontSize: '0.8rem' }}
                   style={{ minWidth: column.minWidth }}
                 >
                   {column.label}
@@ -166,7 +166,7 @@ const Table = ({
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (
-                      <TableCell key={column.id} align={column.align}>
+                      <TableCell key={column.id} align={column.align} sx={{ py: '0.25rem', fontSize: '0.75rem' }}>
                         {renderRowCell(column, value, row)}
                       </TableCell>
                     );
