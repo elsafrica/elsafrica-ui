@@ -31,6 +31,7 @@ const Table = ({
   sendEmail,
   activate,
   confirmPayment,
+  accruePayment,
   setDelete,
   update,
 } : {
@@ -45,6 +46,7 @@ const Table = ({
   sendEmail?: (id: string) => void,
   activate?: (id: string, switchValue: boolean) => void,
   confirmPayment?: (id: string) => void,
+  accruePayment?: (id: string) => void,
   setDelete?: (id: string) => void,
   update?: (data?: Row) => void
 }) => {
@@ -81,9 +83,11 @@ const Table = ({
       case 'assetPrice':
         return column.format && column.format(Number(value))
       case 'ack_payment':
-        return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm Payment</Button>
+        return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm</Button>
+      case 'accrue':
+        return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='warning' onClick={() =>{ if(accruePayment) accruePayment(data?.userId || '') }}>Accrue</Button>
       case 'send_email':
-        return <Button startIcon={<WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send Message</Button>
+        return <Button startIcon={<WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send</Button>
       case 'isDisconnected':
         return <Switch color='error' size='small' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} checked={switchValue} onChange={() => {}} />
       case 'actions':
