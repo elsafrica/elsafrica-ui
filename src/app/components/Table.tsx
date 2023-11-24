@@ -82,6 +82,8 @@ const Table = ({
         return column.format && column.format(Number(value))
       case 'assetPrice':
         return column.format && column.format(Number(value))
+      case 'amount':
+        return column.format && column.format(Number(value))
       case 'ack_payment':
         return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm</Button>
       case 'accrue':

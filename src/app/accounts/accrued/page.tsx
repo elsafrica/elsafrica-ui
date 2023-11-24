@@ -62,6 +62,15 @@ const columns: Column[] = [
     label: 'Amount Due',
     minWidth: 80,
     align: 'center',
+    format(value: number) {
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'Ksh',
+        minimumFractionDigits: 0,
+      });
+
+      return formatter.format(value)
+    },
   },
   {
     id: 'send_email',
