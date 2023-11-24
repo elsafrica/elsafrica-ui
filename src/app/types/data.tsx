@@ -2,7 +2,7 @@ type ColId =
   'name' | 'phone1' | 'phone2' | 'location' | 'ip' | 'created_at' | 'last_payment' | 
   'total_earnings' | 'bill' | 'status' | 'send_email' | 'ack_payment' | 'isDisconnected' | 
   'actions' | 'amount' | 'mac_address' | 'user_name' | 'purpose' |
-  'assetPrice' | 'isForCompany'
+  'assetPrice' | 'isForCompany' | 'accrue'
 
 export interface Column {
   id: ColId;
@@ -24,6 +24,7 @@ export interface Row {
   status?: string;
   send_email?: string;
   ack_payment?: string;
+  accrue?: string;
   isDisconnected?: string;
   created_at?: string;
   last_payment?: string;
