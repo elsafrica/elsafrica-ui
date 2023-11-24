@@ -65,6 +65,10 @@ const Header = () => {
         {
           name: 'Suspended Accounts',
           to: '/accounts/suspended'
+        },
+        {
+          name: 'Accrued Accounts',
+          to: '/accounts/accrued'
         }
       ]
     },
