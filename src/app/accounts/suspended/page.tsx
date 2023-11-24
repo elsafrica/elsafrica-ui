@@ -36,7 +36,7 @@ const columns: Column[] = [
   {
     id: 'last_payment',
     label: 'Last Paid',
-    minWidth: 70,
+    minWidth: 100,
     align: 'center',
   },
   {
@@ -48,10 +48,10 @@ const columns: Column[] = [
   {
     id: 'send_email',
     label: 'Send Message',
-    minWidth: 150,
+    minWidth: 80,
     align: 'center',
   },
-  { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 160, align: 'center' },
+  { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 80, align: 'center' },
   { id: 'isDisconnected', label: 'Connect', minWidth: 40, align: 'center' },
 ];
 
@@ -102,7 +102,7 @@ function SuspendedAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'customers', currentPage, rowsPerPage],
+		queryKey: [ 'suspended', currentPage, rowsPerPage],
 		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error.response) {
@@ -167,7 +167,7 @@ function SuspendedAccounts() {
         message: data.msg
       });
 
-      queryClient.invalidateQueries({ queryKey: ['customers'] })
+      queryClient.invalidateQueries({ queryKey: ['suspended'] })
     } catch (error: any) {
       if (error.response) {
         setNotification({
@@ -197,7 +197,7 @@ function SuspendedAccounts() {
         message: data.msg
       });
 
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: ['suspended'] });
     } catch (error: any) {
       if (error.response) {
         setNotification({

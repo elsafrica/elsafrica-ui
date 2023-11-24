@@ -24,19 +24,19 @@ const columns: Column[] = [
   {
     id: 'location',
     label: 'Location/Apartment',
-    minWidth: 120,
+    minWidth: 60,
     align: 'center',
   },
   {
     id: 'ip',
-    label: 'IP Address',
-    minWidth: 90,
+    label: 'IP',
+    minWidth: 20,
     align: 'center',
   },
   {
     id: 'last_payment',
     label: 'Last Paid',
-    minWidth: 70,
+    minWidth: 100,
     align: 'center',
   },
   {
@@ -48,10 +48,11 @@ const columns: Column[] = [
   {
     id: 'send_email',
     label: 'Send Message',
-    minWidth: 150,
+    minWidth: 80,
     align: 'center',
   },
-  { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 160, align: 'center' },
+  { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 80, align: 'center' },
+  { id: 'accrue', label: 'Accrue', minWidth: 80, align: 'center' },
   { id: 'isDisconnected', label: 'Disconnect', minWidth: 40, align: 'center' },
 ];
 
@@ -100,7 +101,7 @@ function OverdueAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'customers', currentPage, rowsPerPage],
+		queryKey: [ 'overdue', currentPage, rowsPerPage],
 		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error.response) {
@@ -163,7 +164,34 @@ function OverdueAccounts() {
         message: data.msg
       });
 
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: ['overdue'] });
+    } catch (error: any) {
+      if (error.response) {
+        setNotification({
+          status: 'error',
+          message: error.response.data.msg,
+        });
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
+
+  const accruePayment = async (id: string) => {
+    try {
+      const { status, data } = await axios.patch(`${BASE_URL}/customers/accrue_payment`, {
+       id
+      });
+
+      setNotification({
+        status: 'success',
+        message: data.msg
+      });
+
+      queryClient.invalidateQueries({ queryKey: ['overdue'] })
     } catch (error: any) {
       if (error.response) {
         setNotification({
@@ -193,7 +221,7 @@ function OverdueAccounts() {
         message: data.msg
       });
 
-      queryClient.invalidateQueries({ queryKey: ['customers'] });
+      queryClient.invalidateQueries({ queryKey: ['overdue'] });
     } catch (error: any) {
       if (error.response) {
         setNotification({
@@ -238,6 +266,7 @@ function OverdueAccounts() {
         setPageNum={setCurrentPage}
         sendEmail={sendMessage}
         confirmPayment={confirmPayment}
+        accruePayment={accruePayment}
         activate={activate}
       />
       <Snackbar
