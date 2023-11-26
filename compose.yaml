@@ -13,6 +13,8 @@ services:
       context: .
     environment:
       NODE_ENV: production
+      REACT_APP_BASE_URL: http://http://174.138.95.187:8080/api
+      SOCKET_BASE_URL: http://http://174.138.95.187:8080
     ports:
       - 3000:3000
 
