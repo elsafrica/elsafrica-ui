@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    REACT_APP_BASE_URL: 'https://174.138.95.187/api',
-    SOCKET_BASE_URL: 'https://174.138.95.187',
+    REACT_APP_BASE_URL: 'https://elsafrica.net/api',
+    SOCKET_BASE_URL: 'https://elsafrica.net',
   },
   images: {
     remotePatterns: [{
-      hostname: '174.138.95.187',
+      hostname: 'elsafrica.net',
       protocol: 'https',
       port: ''
     }]

@@ -164,7 +164,11 @@ const Table = ({
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody
+            sx={{
+              maxHeight: 'unset',
+            }}
+          >
             {rows
             .map((row) => {
               return (
