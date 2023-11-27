@@ -97,6 +97,7 @@ function createData(
   phone2?: string,
   email?: string,
   package_name?: string,
+  amount?: string,
 ): Row {
   return { 
     userId,
@@ -111,6 +112,7 @@ function createData(
     status,
     email,
     package_name,
+    amount: Number(amount),
   };
 }
 
@@ -130,7 +132,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function CustomerAccounts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(20);
   const [notification, setNotification] = useState<Notification>();
   const [update, setUpdate] = useState<FormikValues>();
 
@@ -291,6 +293,7 @@ export default function CustomerAccounts() {
     user?.phone2,
     user?.email,
     user?.bill?.package,
+    user?.bill?.amount,
   )) || [];
 
   const handleNotificationClose = () => setNotification(undefined);
