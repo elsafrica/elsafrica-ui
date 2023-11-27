@@ -106,7 +106,7 @@ function createData(
     phone2: phone2 || 'N/A',
     location,
     ip,
-    last_payment: `${moment(last_payment).format('MMM Do YYYY')}`,
+    last_payment: `${moment(last_payment).add(30, 'days').format('MMM Do YYYY')}`,
     bill,
     total_earnings: Number(total_earnings),
     status,
