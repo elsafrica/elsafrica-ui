@@ -23,7 +23,7 @@ const Table = ({
   columns,
   rows,
   page,
-  noOfPages,
+  count,
   rowsPerPage,
   isLoading,
   setRowsPerPage,
@@ -38,7 +38,7 @@ const Table = ({
   columns: Array<Column>
   rows: Array<Row>,
   page: number,
-  noOfPages?: number,
+  count: number,
   rowsPerPage: number,
   isLoading: boolean,
   setRowsPerPage: Dispatch<SetStateAction<number>>,
@@ -148,7 +148,7 @@ const Table = ({
   
   return (
     <Paper sx={{ width: '95%', overflow: 'hidden', margin: '1rem auto' }} elevation={5}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer>
         <MuiTable stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -190,7 +190,7 @@ const Table = ({
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={count}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

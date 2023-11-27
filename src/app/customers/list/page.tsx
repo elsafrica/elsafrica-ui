@@ -51,11 +51,34 @@ const columns: Column[] = [
     align: 'center',
   },
   {
+    id: 'amount',
+    label: 'Package Amount',
+    minWidth: 80,
+    align: 'center',
+    format(value: number) {
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'Ksh',
+        minimumFractionDigits: 0,
+      });
+
+      return formatter.format(value)
+    },
+  },
+  {
     id: 'total_earnings',
     label: 'Total Earnings',
     minWidth: 80,
     align: 'center',
-    format: (value: number) => value.toFixed(2),
+    format(value: number) {
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'Ksh',
+        minimumFractionDigits: 0,
+      });
+
+      return formatter.format(value)
+    },
   },
   { id: 'status', label: 'Status', minWidth: 80, align: 'center' },
   { id: 'actions', label: 'Actions', minWidth: 40, align: 'center' },
@@ -313,6 +336,7 @@ export default function CustomerAccounts() {
         columns={columns}
         rows={rows}
         page={currentPage}
+        count={data?.dataLength || rows.length}
         setPageNum={setCurrentPage}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}

@@ -237,6 +237,7 @@ function SuspendedAccounts() {
         columns={columns}
         rows={rows}
         rowsPerPage={rowsPerPage}
+        count={data?.dataLength || rows.length}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}

@@ -210,6 +210,7 @@ export default function CustomerAccounts() {
         columns={columns}
         rows={rows}
         page={currentPage}
+        count={data?.dataLength || rows.length}
         setPageNum={setCurrentPage}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
