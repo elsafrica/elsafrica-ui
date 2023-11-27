@@ -190,7 +190,7 @@ const Table = ({
         </MuiTable>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[10, 25, 100, 125, 150, 175, 200]}
         component="div"
         count={count}
         rowsPerPage={rowsPerPage}

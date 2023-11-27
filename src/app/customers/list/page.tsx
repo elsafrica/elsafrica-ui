@@ -132,7 +132,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export default function CustomerAccounts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(20);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(200);
   const [notification, setNotification] = useState<Notification>();
   const [update, setUpdate] = useState<FormikValues>();
 
