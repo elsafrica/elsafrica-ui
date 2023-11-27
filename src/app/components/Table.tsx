@@ -69,6 +69,8 @@ const Table = ({
         return 'warning';
       case'Suspended':
         return 'error';
+      case 'Accrued':
+        return 'info';
     }
   }
 

@@ -255,7 +255,7 @@ export default function CustomerAccounts() {
     }
   })
 
-  const checkStatus = (last_payment?: string, isDisconnected?: boolean) : string => {
+  const checkStatus = (last_payment?: string, isDisconnected?: boolean, accrued?: number) : string => {
     const due = 
       moment(last_payment)
       .isSameOrBefore(moment(new Date())
@@ -265,8 +265,14 @@ export default function CustomerAccounts() {
       .isSameOrBefore(moment(new Date())
       .subtract(35, 'days'));
 
+    const isAccrued = accrued && accrued > 0;
+
     if (isDisconnected) {
       return 'Suspended';
+    }
+
+    if (isAccrued) {
+      return 'Accrued';
     }
 
     if (overdue) {
@@ -289,7 +295,7 @@ export default function CustomerAccounts() {
     user?.last_payment,
     user?.bill?.package,
     user?.total_earnings,
-    checkStatus(user?.last_payment, user?.isDisconnected),
+    checkStatus(user?.last_payment, user?.isDisconnected, Number(user?.accrued_amount)),
     user?.phone2,
     user?.email,
     user?.bill?.package,
