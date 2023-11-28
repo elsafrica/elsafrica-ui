@@ -134,7 +134,7 @@ function SuspendedAccounts() {
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
         id,
-        isSuspending: true,
+        status: 'suspended',
       });
 
       setNotification({
@@ -143,10 +143,10 @@ function SuspendedAccounts() {
       });
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
-          message: error.response.data.msg,
-        });
+          message: error.response.data.errMsg || error.response.data.err
+        })
       }
 
       setNotification({

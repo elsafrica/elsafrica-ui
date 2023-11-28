@@ -161,7 +161,8 @@ function AccruedAccounts() {
   const sendMessage = async (id: string) => {
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
-        id
+        id,
+        status: 'accrued',
       });
 
       setNotification({
@@ -170,10 +171,10 @@ function AccruedAccounts() {
       });
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
-          message: error.response.data.msg,
-        });
+          message: error.response.data.errMsg || error.response.data.err
+        })
       }
 
       setNotification({
