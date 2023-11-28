@@ -172,6 +172,7 @@ export default function CustomerAccounts() {
   });
 
   const onUpdateSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
+	  console.log(values)
     try {
       const { data } = await axios.patch(`${BASE_URL}/customers/update`, Object.assign(values, { id: values.userId, package: values.package_name }));
       setNotification({
@@ -442,6 +443,7 @@ export default function CustomerAccounts() {
                       justifyContent: { md: 'space-between' }
                     }}
                   >
+			  {console.log(errors)}
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="firstName" label='Customer First Name' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="lastName" label='Customer Last Name' required />
                     <TelTextField value={values.phone1} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
