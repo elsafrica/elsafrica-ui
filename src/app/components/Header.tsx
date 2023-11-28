@@ -156,7 +156,8 @@ const Header = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-              fontSize: '2rem'
+              fontSize: '2rem',
+              fontFamily: '__Bubblegum_Sans_56bc0b, __Bubblegum_Sans_Fallback_56bc0b',
             }}
             className={montserrat.className}
           >
@@ -189,12 +190,12 @@ const Header = () => {
               mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
-              fontFamily: 'monospace',
               fontWeight: 1200,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-              fontSize: '2rem'
+              fontSize: '2rem',
+              fontFamily: '__Bubblegum_Sans_56bc0b, __Bubblegum_Sans_Fallback_56bc0b',
             }}
             className={montserrat.className}
           >
