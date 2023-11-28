@@ -73,7 +73,7 @@ const NewCustomer = () => {
       .required('Please fill out this field.'),
     phone2: string(),
     email: string()
-      .required('Please fill out this field.'),
+      .email('Please enter a valid E-mail address.'),
     ip: string()
       .test({
         name: 'ip_address_test',
