@@ -172,7 +172,6 @@ export default function CustomerAccounts() {
   });
 
   const onUpdateSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
-	  console.log(values)
     try {
       const { data } = await axios.patch(`${BASE_URL}/customers/update`, Object.assign(values, { id: values.userId, package: values.package_name }));
       setNotification({
@@ -443,7 +442,6 @@ export default function CustomerAccounts() {
                       justifyContent: { md: 'space-between' }
                     }}
                   >
-			  {Object.entries(errors).join(',')}
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="firstName" label='Customer First Name' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="lastName" label='Customer Last Name' required />
                     <TelTextField value={values.phone1} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
@@ -454,11 +452,11 @@ export default function CustomerAccounts() {
                     <Select
                       sx={{ width: { md: '48%', lg: '48%' }}}
                       label='Package' 
-                      value={values.package_name || ''} 
+                      value={values.package || values.package_name || ''} 
                       values={packages?.packages?.concat([{ name: 'Custom'}]).map((item: { name: string, amount: string }) => item.name) || []} 
-                      onChange={(value) => {setFieldValue('package_name', value)}}
-                      isError={Boolean(getFieldMeta('package_name') && errors.package_name)}
-                      error={errors.package_name}
+                      onChange={(value) => {setFieldValue('package', value)}}
+                      isError={Boolean(getFieldMeta('package') && errors.package)}
+                      error={errors.package}
                     />
                     { values.package_name === 'Custom' && <TextField sx={{ width: { md: '48%', lg: '48%' }, margin: { xs: '1rem 0 0', md: '0' }}} name="customAmount" label='Custom Amount' required />}
                   </Box>
