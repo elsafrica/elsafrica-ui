@@ -25,7 +25,6 @@ import Loader from '@/app/components/Loader';
 const columns: Column[] = [
   { id: 'name', label: 'Customer Name', minWidth: 120, align: 'left' },
   { id: 'phone1', label: 'Primary Phone', minWidth: 100, align: 'left' },
-  { id: 'phone2', label: 'Secondary Phone', minWidth: 100, align: 'left' },
   {
     id: 'location',
     label: 'Location/Apartment',
