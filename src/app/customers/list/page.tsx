@@ -113,6 +113,7 @@ function createData(
     email,
     package_name,
     amount: Number(amount),
+    package: package_name
   };
 }
 
@@ -174,7 +175,7 @@ export default function CustomerAccounts() {
 
   const onUpdateSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
     try {
-      const { data } = await axios.patch(`${BASE_URL}/customers/update`, Object.assign(values, { id: values.userId, package: values.package_name }));
+      const { data } = await axios.patch(`${BASE_URL}/customers/update`, Object.assign(values, { id: values.userId }));
       setNotification({
         status: 'success',
         message: data.msg
@@ -453,8 +454,11 @@ export default function CustomerAccounts() {
                     <Select
                       sx={{ width: { md: '48%', lg: '48%' }}}
                       label='Package' 
-                      value={values.package || values.package_name || ''} 
-                      values={packages?.packages?.concat([{ name: 'Custom'}]).map((item: { name: string, amount: string }) => item.name) || []} 
+                      value={values.package || ''} 
+                      values={
+                        packages?.packages?.concat([{ name: 'Custom'}]).map((item: { name: string, amount: string }) => item.name) || 
+                        [{ name: 'Custom', amount: '' }].map((item: { name: string, amount: string }) => item.name)
+                      } 
                       onChange={(value) => {setFieldValue('package', value)}}
                       isError={Boolean(getFieldMeta('package') && errors.package)}
                       error={errors.package}

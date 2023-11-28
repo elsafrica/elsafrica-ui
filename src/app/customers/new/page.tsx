@@ -193,7 +193,10 @@ const NewCustomer = () => {
                         sx={{ width: { md: '48%', lg: '48%' }}}
                         label='Package' 
                         value={values.package} 
-                        values={data?.packages?.concat([{ name: 'Custom' }]).map((item: { name: string, amount: string }) => item.name) || []} 
+                        values={
+                          data?.packages?.concat([{ name: 'Custom' }]).map((item: { name: string, amount: string }) => item.name) ||
+                          [{ name: 'Custom', amount: '' }].map((item: { name: string, amount: string }) => item.name)
+                        } 
                         onChange={(value) => {setFieldValue('package', value)}}
                         isError={Boolean(getFieldMeta('package') && errors.package)}
                         error={errors.package}

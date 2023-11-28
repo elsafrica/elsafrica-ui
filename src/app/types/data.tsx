@@ -38,6 +38,7 @@ export interface Row {
   purpose?: string;
   isForCompany?: string;
   assetPrice?: string;
+  package?: string;
 }
 
 export interface AxiosErrorData {
