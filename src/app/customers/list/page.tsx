@@ -201,6 +201,8 @@ export default function CustomerAccounts() {
   const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
 		users: Array<any>,
 		dataLength: number,
+    totalEarnings?: number,
+    monthlyEarnings?: number,
 	}> => {
 		 const data = (await axios.get(`${BASE_URL}/customers/get_customers`, {
 			params: {
@@ -326,19 +328,81 @@ export default function CustomerAccounts() {
   return (
     <>
       <Header />
-      <Box>
+      <Box
+        display='flex'
+        flexDirection='row'
+        justifyContent='space-between'
+        alignItems='center'
+        px='2rem'
+        py='1rem'
+        paddingBottom='0'
+      >
         <Typography
           sx={{
             color: '#91d000',
             fontSize: '1.2rem',
             fontWeight: 'bold',
-            margin: '1.5rem 1rem 0.5rem',
           }}
           component='h1'
           textAlign='start'
         >
           Customer Accounts
         </Typography>
+        <Box
+          display='flex'
+          flexDirection='row'
+          alignItems='center'
+          gap='3rem'
+        >
+          <Box>
+            <Typography
+              component='p'
+              fontWeight='bold'
+              fontSize='1rem'
+              color='Highlight'
+              marginRight='0.75rem'
+              display='inline'
+            >
+              Total Earnings
+            </Typography>
+            <Typography
+              component='span'
+              fontSize='0.75rem'
+              fontWeight='medium'
+              color='InfoText'
+            >
+              {new Intl.NumberFormat('en-US', {
+                currency: 'KSH',
+                minimumFractionDigits: 0,
+                style: 'currency'
+              }).format(data?.totalEarnings || 0)}
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              component='p'
+              fontWeight='bold'
+              fontSize='1rem'
+              color='Highlight'
+              marginRight='0.75rem'
+              display='inline'
+            >
+              Monthly Earnings
+            </Typography>
+            <Typography
+              component='span'
+              fontSize='0.75rem'
+              fontWeight='medium'
+              color='InfoText'
+            >
+              {new Intl.NumberFormat('en-US', {
+                currency: 'KSH',
+                minimumFractionDigits: 0,
+                style: 'currency'
+              }).format(data?.monthlyEarnings || 0)}
+            </Typography>
+          </Box>
+        </Box>
       </Box>
       <Table
         isLoading={isLoading}
