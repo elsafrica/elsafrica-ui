@@ -443,7 +443,7 @@ export default function CustomerAccounts() {
                       justifyContent: { md: 'space-between' }
                     }}
                   >
-			  {console.log(errors)}
+			  {Object.entries(errors).join(',')}
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="firstName" label='Customer First Name' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="lastName" label='Customer Last Name' required />
                     <TelTextField value={values.phone1} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
