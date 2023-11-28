@@ -126,6 +126,7 @@ interface FormikValues extends Row {
   email?: string;
   customAmount?: string;
   package_name?: string;
+  package?: string;
 }
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
