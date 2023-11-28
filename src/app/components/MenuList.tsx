@@ -71,7 +71,8 @@ export default function MenuListComposition({
         aria-controls={open ? 'composition-menu' : undefined}
         aria-expanded={open ? 'true' : undefined}
         aria-haspopup="true"
-        onClick={handleToggle}
+        onMouseEnter={handleToggle}
+        onMouseLeave={handleToggle}
         color="inherit"
         sx={{
           color: pathname.includes(linkContains) ? lightGreen[100] : '#fff'
@@ -97,6 +98,8 @@ export default function MenuListComposition({
               transformOrigin:
                 placement === 'bottom-start' ? 'left top' : 'left bottom',
             }}
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>

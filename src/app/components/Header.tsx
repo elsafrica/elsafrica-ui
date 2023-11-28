@@ -16,6 +16,7 @@ import Link from 'next/link';
 import MenuListComposition from './MenuList';
 import { ContextUpdater } from '../providers/context';
 import { Bubblegum_Sans as Bubblegum } from 'next/font/google'
+import Drawer from './Drawer';
 
 interface Link {
   name: string;
@@ -173,34 +174,11 @@ const Header = () => {
             >
               <MenuIcon />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
+            <Drawer
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' }
-              }}
-            >
-              {/* {pages.map((page) => (
-                <Link href={page.to} key={page.name} style={{ textDecoration: 'none', color: 'black' }}>
-                  <MenuItem key={page.name} onClick={handleCloseNavMenu} sx={{
-                    width: { xs: '250px' }
-                  }}>
-                    <Typography textAlign="center">{page.name}</Typography>
-                  </MenuItem>
-                </Link>
-              ))} */}
-            </Menu>
+              pages={pages}
+            />
           </Box>
           <Typography
             variant="h5"
