@@ -200,10 +200,9 @@ function AccruedAccounts() {
         message: data.msg
       });
 
-      queryClient.invalidateQueries({ queryKey: ['accrued'] });
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
           message: error.response.data.msg,
         });
@@ -213,6 +212,8 @@ function AccruedAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['accrued'] });
     }
   }
 
@@ -233,21 +234,21 @@ function AccruedAccounts() {
           amount: ''
         }
       });
-      queryClient.invalidateQueries(['accrued']);
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
           message: error.response.data.msg,
         });
       }
-
+      
       setNotification({
         status: 'error',
         message: error.message,
       });
     } finally {
       setUserId(undefined);
+      queryClient.invalidateQueries(['accrued']);
     }
   }
 

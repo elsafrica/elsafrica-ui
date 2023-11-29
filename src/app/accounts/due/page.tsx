@@ -164,20 +164,20 @@ function DueAccounts() {
         status: 'success',
         message: data.msg
       });
-
-      queryClient.invalidateQueries({ queryKey: ['due'] })
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
           message: error.response.data.msg,
         });
       }
-
+      
       setNotification({
         status: 'error',
         message: error.message,
       });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['due'] });
     }
   }
 

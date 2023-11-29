@@ -168,7 +168,7 @@ function SuspendedAccounts() {
       });
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
           message: error.response.data.msg,
         });

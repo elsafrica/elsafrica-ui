@@ -165,19 +165,20 @@ function OverdueAccounts() {
         message: data.msg
       });
 
-      queryClient.invalidateQueries({ queryKey: ['overdue'] });
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
           message: error.response.data.msg,
         });
       }
-
+      
       setNotification({
         status: 'error',
         message: error.message,
       });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['overdue'] });
     }
   }
 
@@ -191,20 +192,20 @@ function OverdueAccounts() {
         status: 'success',
         message: data.msg
       });
-
-      queryClient.invalidateQueries({ queryKey: ['overdue'] })
     } catch (error: any) {
       if (error.response) {
-        setNotification({
+        return setNotification({
           status: 'error',
           message: error.response.data.msg,
         });
       }
-
+      
       setNotification({
         status: 'error',
         message: error.message,
       });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['overdue'] })
     }
   }
 
