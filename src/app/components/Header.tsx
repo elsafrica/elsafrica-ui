@@ -139,7 +139,7 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{
+    <AppBar position="sticky" sx={{
       backgroundColor: '#91d000'
     }}>
       <Container maxWidth="xl">
