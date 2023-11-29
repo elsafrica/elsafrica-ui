@@ -194,7 +194,10 @@ export default function CustomerAccounts() {
             color='whatsapp'
             onClick={testMessage}
             startIcon={<Send />}
-            disabled={Boolean(!qrCode) || loading}
+            disabled={Boolean(!qrCode)}
+            sx={{
+              mt: '1rem'
+            }}
           >
             Test Message
           </Button>
