@@ -164,7 +164,7 @@ export default function CustomerAccounts() {
             variant='contained'
             onClick={requestQRCode}
             startIcon={<WhatsAppIcon />}
-            disabled={Boolean(qrCode) || loading}
+            disabled={loading}
           >
             Request QR Code
           </Button>
