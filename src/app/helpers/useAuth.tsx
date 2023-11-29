@@ -6,10 +6,8 @@ export const useAuthenticate = (token: string) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
   const router = useRouter();
   useEffect(() => {
-    if(!token || decodeToken(token).isExpired) {
-      console.log('pushing');
-      
-      router.push('/sign_in');
+    if(!token || decodeToken(token).isExpired) {      
+      router.push('/auth/sign_in');
     } else {
       setIsAuthenticated(true);
     }
