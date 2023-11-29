@@ -52,7 +52,6 @@ const columns: Column[] = [
     align: 'center',
   },
   { id: 'ack_payment', label: 'Acknowledge Payment', minWidth: 80, align: 'center' },
-  { id: 'isDisconnected', label: 'Connect', minWidth: 40, align: 'center' },
 ];
 
 function createData(
@@ -160,14 +159,13 @@ function SuspendedAccounts() {
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accept_payment`, {
         id,
+        isSuspended: true,
       });
 
       setNotification({
         status: 'success',
         message: data.msg
       });
-
-      queryClient.invalidateQueries({ queryKey: ['suspended'] })
     } catch (error: any) {
       if (error.response) {
         setNotification({
@@ -175,43 +173,17 @@ function SuspendedAccounts() {
           message: error.response.data.msg,
         });
       }
-
+      
       setNotification({
         status: 'error',
         message: error.message,
       });
+    } finally {
+      queryClient.invalidateQueries({ queryKey: ['suspended'] })
     }
   }
 
   const handleNotificationClose = () => setNotification(undefined);
-
-  const activate = async (id: string) => {
-    try {
-      const { status, data } = await axios.patch(`${BASE_URL}/customers/activate`, {
-        id,
-        deactivate: false
-      });
-
-      setNotification({
-        status: 'success',
-        message: data.msg
-      });
-
-      queryClient.invalidateQueries({ queryKey: ['suspended'] });
-    } catch (error: any) {
-      if (error.response) {
-        setNotification({
-          status: 'error',
-          message: error.response.data.msg,
-        });
-      }
-
-      setNotification({
-        status: 'error',
-        message: error.message,
-      });
-    }
-  }
 
   if(!isAuthorized) return <Loader />;
 
@@ -243,7 +215,6 @@ function SuspendedAccounts() {
         setPageNum={setCurrentPage}
         sendEmail={sendMessage}
         confirmPayment={confirmPayment}
-        activate={activate}
       />
       <Snackbar
         autoHideDuration={6000}
