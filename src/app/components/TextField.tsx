@@ -62,14 +62,10 @@ export const TextFieldPassword = (props: FieldHookConfig<string> & FieldProps) =
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   return (
-    <FormControl sx={{ marginBottom: '1rem' }} variant="outlined" color={meta.error && meta.touched ? 'error' : 'primary'}>
-      <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+    <FormControl sx={{ marginBottom: '1rem', ...props.sx }} variant="outlined" color={meta.error && meta.touched ? 'error' : 'primary'}>
+      <InputLabel htmlFor="outlined-adornment-password">{props.label}</InputLabel>
       <OutlinedInput
         id="outlined-adornment-password"
-        sx={{
-          width: 'auto',
-          ...props.sx
-        }}
         type={showPassword ? 'text' : 'password'}
         required={props.required}
         endAdornment={
