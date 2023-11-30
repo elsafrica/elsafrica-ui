@@ -121,21 +121,6 @@ const Table = ({
     }
   }
 
-  if (isLoading) {
-    return (
-      <Paper sx={{ 
-        width: '95%', 
-        overflow: 'hidden', 
-        margin: '1rem auto', 
-        padding: '2rem 0',
-        display: 'flex',
-        justifyContent: 'center', 
-        alignItems: 'center' }} elevation={5}>
-        <CircularProgress />
-      </Paper>
-    )
-  }
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => onSearchChange && onSearchChange(e.target.value);
   
   return (
@@ -150,45 +135,47 @@ const Table = ({
                 No content available
               </Typography>
             </Box> :
-            <TableContainer>
-              <MuiTable stickyHeader aria-label="sticky table">
-                <TableHead>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.25rem', fontSize: '0.8rem' }}
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody
-                  sx={{
-                    maxHeight: 'unset',
-                  }}
-                >
-                  {rows
-                  .map((row) => {
-                    return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-                        {columns.map((column) => {
-                          const value = row[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align} sx={{ py: '0.25rem', fontSize: '0.75rem' }}>
-                              {renderRowCell(column, value, row)}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                })}
-                </TableBody>
-              </MuiTable>
-            </TableContainer>
+            isLoading ?
+              <CircularProgress /> :
+              <TableContainer>
+                <MuiTable stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.25rem', fontSize: '0.8rem' }}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody
+                    sx={{
+                      maxHeight: 'unset',
+                    }}
+                  >
+                    {rows
+                    .map((row) => {
+                      return (
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                          {columns.map((column) => {
+                            const value = row[column.id];
+                            return (
+                              <TableCell key={column.id} align={column.align} sx={{ py: '0.25rem', fontSize: '0.75rem' }}>
+                                {renderRowCell(column, value, row)}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      );
+                  })}
+                  </TableBody>
+                </MuiTable>
+              </TableContainer>
         }
       <TablePagination
         rowsPerPageOptions={[10, 25, 100, 125, 150, 175, 200]}
