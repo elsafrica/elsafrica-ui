@@ -18,6 +18,7 @@ import Loader from '../components/Loader';
 import { Roboto } from 'next/font/google';
 import { Send } from '@mui/icons-material';
 import Textarea from '../components/TextArea';
+import { ImageDrop } from '../components/Dropzone';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -28,6 +29,7 @@ export default function CustomerAccounts() {
   const [loading, setLoading] = useState(false);
   const [isSending, setIsSending] = useState<boolean>();
   const [message, setMessage] = useState<string>('');
+  const [file, setFile] = useState<File>();
 
   const { authToken, qrCode } = useContext(Context);
   const { updateQRCode } = useContext(ContextUpdater);
@@ -97,12 +99,14 @@ export default function CustomerAccounts() {
       message: 'Please enter your message the submit.'
     });
 
+    const fd = new FormData();
+    fd.append('message', message);
+    fd.append('file', file || '');
+
     setIsSending(true);
 
     try {
-      const { data } = await axios.post(`${BASE_URL}/messages/broadcast_message`, {
-        message
-      });
+      const { data } = await axios.post(`${BASE_URL}/messages/broadcast_message`, fd);
 
       setNotification({
         status: 'success',
@@ -126,6 +130,7 @@ export default function CustomerAccounts() {
   }
 
   const onTextAreaChange = (value: string) => setMessage(value);
+  const onAccept = (file?: File) => setFile(file);
 
   if(!isAuthorized) return <Loader />;
 
@@ -236,6 +241,10 @@ export default function CustomerAccounts() {
                     onChange={onTextAreaChange}
                   />
                 </FormControl>
+                <ImageDrop onAccept={onAccept} accept={{
+                  'image/jpeg': ['.png', '.webp', '.jpg']
+                }}
+                />
                 <Button disabled={isSending} sx={{ mt: '1rem', clear: 'left' }} type='submit' startIcon={<Send />} color='whatsapp' variant='contained'>Send message</Button>
               </Box>
             </form>
