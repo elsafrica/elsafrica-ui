@@ -95,7 +95,9 @@ const NewCustomer = () => {
               margin: 'auto'
             }}
           >
-           <Dropzone onSubmit={onSubmit} />
+           <Dropzone onSubmit={onSubmit} accept={{
+            'text/csv': ['.csv']
+           }} />
           </Box>
         </Box>
       </Box>
