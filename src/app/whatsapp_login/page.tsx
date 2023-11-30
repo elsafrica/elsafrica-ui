@@ -10,7 +10,6 @@ import { Context, ContextUpdater } from '../providers/context';
 import QRCode from 'react-qr-code';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
-import TextArea from '@mui/material/TextareaAutosize';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import CircularProgress from '@mui/material/CircularProgress';
 import AxiosInstance  from '../services/axios';
@@ -18,6 +17,7 @@ import { useAuthorize } from '../helpers/useAuth';
 import Loader from '../components/Loader';
 import { Roboto } from 'next/font/google';
 import { Send } from '@mui/icons-material';
+import Textarea from '../components/TextArea';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -27,7 +27,7 @@ export default function CustomerAccounts() {
   const [notification, setNotification] = useState<Notification>();
   const [loading, setLoading] = useState(false);
   const [isSending, setIsSending] = useState<boolean>();
-  const [message, setMessage] = useState<string>();
+  const [message, setMessage] = useState<string>('');
 
   const { authToken, qrCode } = useContext(Context);
   const { updateQRCode } = useContext(ContextUpdater);
@@ -125,11 +125,7 @@ export default function CustomerAccounts() {
     }
   }
 
-  const onTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = e.target;
-
-    setMessage(value);
-  };
+  const onTextAreaChange = (value: string) => setMessage(value);
 
   if(!isAuthorized) return <Loader />;
 
@@ -225,7 +221,7 @@ export default function CustomerAccounts() {
                 alignItems='start'
               >
                 <FormControl>
-                  <TextArea 
+                  <Textarea
                     style={{
                       maxWidth: '250px',
                       minWidth: '250px',
@@ -233,13 +229,12 @@ export default function CustomerAccounts() {
                       minHeight: '50px',
                       padding: '1rem',
                       fontSize: '1rem',
-                      letterSpacing: '0.05rem',
-                      clear: 'right'
+                      clear: 'right',
                     }}
                     placeholder='Enter Message'
                     className={roboto.className}
                     onChange={onTextAreaChange}
-                  ></TextArea>
+                  />
                 </FormControl>
                 <Button disabled={isSending} sx={{ mt: '1rem', clear: 'left' }} type='submit' startIcon={<Send />} color='whatsapp' variant='contained'>Send message</Button>
               </Box>
