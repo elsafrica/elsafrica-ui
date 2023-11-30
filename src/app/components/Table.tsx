@@ -18,6 +18,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import WhatsApp from '@mui/icons-material/WhatsApp';
+import Searchbar from './Searchbar';
 
 const Table = ({
   columns,
@@ -26,6 +27,7 @@ const Table = ({
   count,
   rowsPerPage,
   isLoading,
+  searchValue,
   setRowsPerPage,
   setPageNum,
   sendEmail,
@@ -34,6 +36,7 @@ const Table = ({
   accruePayment,
   setDelete,
   update,
+  onSearchChange,
 } : {
   columns: Array<Column>
   rows: Array<Row>,
@@ -41,6 +44,7 @@ const Table = ({
   count: number,
   rowsPerPage: number,
   isLoading: boolean,
+  searchValue?: string,
   setRowsPerPage: Dispatch<SetStateAction<number>>,
   setPageNum: Dispatch<SetStateAction<number>>,
   sendEmail?: (id: string) => void,
@@ -48,7 +52,8 @@ const Table = ({
   confirmPayment?: (id: string) => void,
   accruePayment?: (id: string) => void,
   setDelete?: (id: string) => void,
-  update?: (data?: Row) => void
+  update?: (data?: Row) => void,
+  onSearchChange?: (value: string) => void
 }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPageNum(newPage);
@@ -131,64 +136,60 @@ const Table = ({
     )
   }
 
-  if (rows.length < 1) {
-    return (
-      <Paper sx={{ 
-        width: '95%', 
-        overflow: 'hidden', 
-        margin: '1rem auto', 
-        padding: '2rem 0',
-        display: 'flex',
-        justifyContent: 'center', 
-        alignItems: 'center' }} elevation={5}>
-        <Typography component="p" fontWeight="bold">
-          No content available
-        </Typography>
-      </Paper>
-    )
-  }
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => onSearchChange && onSearchChange(e.target.value);
   
   return (
     <Paper sx={{ width: '95%', overflow: 'hidden', margin: '1rem auto' }} elevation={5}>
-      <TableContainer>
-        <MuiTable stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.25rem', fontSize: '0.8rem' }}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody
-            sx={{
-              maxHeight: 'unset',
-            }}
-          >
-            {rows
-            .map((row) => {
-              return (
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
-                  {columns.map((column) => {
-                    const value = row[column.id];
-                    return (
-                      <TableCell key={column.id} align={column.align} sx={{ py: '0.25rem', fontSize: '0.75rem' }}>
-                        {renderRowCell(column, value, row)}
+        <Box px='1rem' py='0.5rem' display='flex' justifyContent='end'>
+          <Searchbar value={searchValue} label='Search by name' onChange={onChange} />
+        </Box>
+        {
+          rows.length < 1 ?
+            <Box maxWidth='200px' mx='auto'>
+              <Typography component="p" fontWeight="bold">
+                No content available
+              </Typography>
+            </Box> :
+            <TableContainer>
+              <MuiTable stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        sx={{ fontWeight: 'bold', width: column?.width || 'auto', py: '0.25rem', fontSize: '0.8rem' }}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
                       </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody
+                  sx={{
+                    maxHeight: 'unset',
+                  }}
+                >
+                  {rows
+                  .map((row) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell key={column.id} align={column.align} sx={{ py: '0.25rem', fontSize: '0.75rem' }}>
+                              {renderRowCell(column, value, row)}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
                     );
-                  })}
-                </TableRow>
-              );
-          })}
-          </TableBody>
-        </MuiTable>
-      </TableContainer>
+                })}
+                </TableBody>
+              </MuiTable>
+            </TableContainer>
+        }
       <TablePagination
         rowsPerPageOptions={[10, 25, 100, 125, 150, 175, 200]}
         component="div"

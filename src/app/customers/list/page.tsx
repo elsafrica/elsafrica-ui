@@ -134,6 +134,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 export default function CustomerAccounts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(200);
+  const [searchValue, setSearchValue] = useState<string>('');
   const [notification, setNotification] = useState<Notification>();
   const [update, setUpdate] = useState<FormikValues>();
 
@@ -198,7 +199,7 @@ export default function CustomerAccounts() {
     }
   }
 
-  const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
+  const fetchCustomers = async (currentPage: number, rowsPerPage: number, searchValue?: string) : Promise<{
 		users: Array<any>,
 		dataLength: number,
     totalEarnings?: number,
@@ -208,6 +209,7 @@ export default function CustomerAccounts() {
 			params: {
 				pageNum: currentPage,
 				rowsPerPage,
+        searchValue,
 			}
 		})).data;
 		
@@ -223,8 +225,8 @@ export default function CustomerAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'customers', currentPage, rowsPerPage],
-		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+		queryKey: [ 'customers', currentPage, rowsPerPage, searchValue],
+		queryFn: () => fetchCustomers(currentPage, rowsPerPage, searchValue),
     onError(err: AxiosError<AxiosErrorData>) {
       if(err.response) {
         setNotification({
@@ -318,6 +320,7 @@ export default function CustomerAccounts() {
   };
 
   const onCloseUpdate = () => setUpdate(undefined);
+  const onSearchChange = (value: string) => setSearchValue(value);
 
   if(!isAuthorized) {
     return (
@@ -414,6 +417,8 @@ export default function CustomerAccounts() {
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
         update={onUpdate}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
       />
       <Modal
         title='Update Customer'
