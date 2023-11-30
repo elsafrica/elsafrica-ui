@@ -129,7 +129,7 @@ const Table = ({
           <Searchbar value={searchValue} label='Search by name' onChange={onChange} />
         </Box>
         {
-          true ?
+          isLoading ?
             <Box display='flex' alignItems='center' justifyContent='center'><CircularProgress size='1rem' /></Box> :
             rows.length < 1 ?
               <Box maxWidth='200px' mx='auto'>
