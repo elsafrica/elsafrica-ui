@@ -129,14 +129,14 @@ const Table = ({
           <Searchbar value={searchValue} label='Search by name' onChange={onChange} />
         </Box>
         {
-          rows.length < 1 ?
-            <Box maxWidth='200px' mx='auto'>
-              <Typography component="p" fontWeight="bold">
-                No content available
-              </Typography>
-            </Box> :
-            isLoading ?
-              <CircularProgress /> :
+          isLoading ?
+            <CircularProgress /> :
+            rows.length < 1 ?
+              <Box maxWidth='200px' mx='auto'>
+                <Typography component="p" fontWeight="bold">
+                  No content available
+                </Typography>
+              </Box> :
               <TableContainer>
                 <MuiTable stickyHeader aria-label="sticky table">
                   <TableHead>
