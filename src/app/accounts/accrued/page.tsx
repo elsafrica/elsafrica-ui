@@ -184,6 +184,31 @@ function AccruedAccounts() {
     }
   }
 
+  const broadcastMessage = async () => {
+    try {
+      const { status, data } = await axios.post(`${BASE_URL}/messages/broadcast_status_message`, {
+        status: 'accrued',
+      });
+
+      setNotification({
+        status: 'success',
+        message: data.msg
+      });
+    } catch (error: any) {
+      if (error.response) {
+        return setNotification({
+          status: 'error',
+          message: error.response.data.errMsg || error.response.data.err
+        })
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
+
   const setId = (id: string) => setUserId(id);
 
   const handleNotificationClose = () => setNotification(undefined);
@@ -283,6 +308,7 @@ function AccruedAccounts() {
         sendEmail={sendMessage}
         confirmPayment={setId}
         activate={activate}
+        broadcastMessage={broadcastMessage}
       />
       <Modal
         title='Update Customer'

@@ -154,6 +154,31 @@ function DueAccounts() {
     }
   }
 
+  const broadcastMessage = async () => {
+    try {
+      const { status, data } = await axios.post(`${BASE_URL}/messages/broadcast_status_message`, {
+        status: 'due',
+      });
+
+      setNotification({
+        status: 'success',
+        message: data.msg
+      });
+    } catch (error: any) {
+      if (error.response) {
+        return setNotification({
+          status: 'error',
+          message: error.response.data.errMsg || error.response.data.err
+        })
+      }
+
+      setNotification({
+        status: 'error',
+        message: error.message,
+      });
+    }
+  }
+
   const confirmPayment = async (id: string) => {
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accept_payment`, {
@@ -270,6 +295,7 @@ function DueAccounts() {
         confirmPayment={confirmPayment}
         accruePayment={accruePayment}
         activate={activate}
+        broadcastMessage={broadcastMessage}
       />
       <Snackbar
         autoHideDuration={6000}
