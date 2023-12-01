@@ -37,6 +37,7 @@ const Table = ({
   setDelete,
   update,
   onSearchChange,
+  broadcastMessage,
 } : {
   columns: Array<Column>
   rows: Array<Row>,
@@ -53,7 +54,8 @@ const Table = ({
   accruePayment?: (id: string) => void,
   setDelete?: (id: string) => void,
   update?: (data?: Row) => void,
-  onSearchChange?: (value: string) => void
+  onSearchChange?: (value: string) => void,
+  broadcastMessage?: () => void
 }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPageNum(newPage);
@@ -126,6 +128,12 @@ const Table = ({
   return (
     <Paper sx={{ width: '95%', overflow: 'hidden', margin: '1rem auto' }} elevation={5}>
         <Box px='1rem' py='0.5rem' display='flex' justifyContent='end'>
+          <Box display='flex' alignItems='end' px='1rem'>
+            {
+              broadcastMessage && typeof broadcastMessage === 'function' &&
+              <Button startIcon={<WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(broadcastMessage) broadcastMessage()}}>Send To Many</Button>
+            }
+          </Box>
           <Searchbar value={searchValue} label='Search by name' onChange={onChange} />
         </Box>
         {
