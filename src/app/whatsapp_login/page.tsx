@@ -31,7 +31,7 @@ export default function CustomerAccounts() {
   const [message, setMessage] = useState<string>('');
   const [file, setFile] = useState<File>();
 
-  const { authToken, qrCode } = useContext(Context);
+  const { authToken, qrCode, isWAConnected } = useContext(Context);
   const { updateQRCode } = useContext(ContextUpdater);
   const axios = AxiosInstance.initInstance(authToken);
   const { isAuthorized } = useAuthorize(authToken);
@@ -167,7 +167,7 @@ export default function CustomerAccounts() {
             startIcon={<WhatsAppIcon />}
             disabled={loading}
           >
-            Request QR Code
+            Request Connection
           </Button>
           <Box
             sx={{
@@ -185,7 +185,7 @@ export default function CustomerAccounts() {
               value={qrCode}
               viewBox={`0 0 200 200`}
             />
-            : loading ?
+            : loading && !isWAConnected ?
             <CircularProgress />
             : <></>
             }
@@ -195,7 +195,7 @@ export default function CustomerAccounts() {
             color='whatsapp'
             onClick={testMessage}
             startIcon={<Send />}
-            disabled={Boolean(!qrCode)}
+            disabled={!isWAConnected}
             sx={{
               mt: '1rem'
             }}
@@ -252,7 +252,7 @@ export default function CustomerAccounts() {
         </Box>
       </Box>
       <Snackbar
-        autoHideDuration={6000}
+        autoHideDuration={1000}
         open={Boolean(notification)}
         onClose={handleNotificationClose}
         anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
@@ -265,6 +265,20 @@ export default function CustomerAccounts() {
           onClose={handleNotificationClose}
         >
           {notification?.message}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        autoHideDuration={6000}
+        open={Boolean(isWAConnected)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          severity='success'
+          sx={{
+            width: '100%'
+          }}
+        >
+          Connected. You can proceed to send messages.
         </Alert>
       </Snackbar>
     </>
