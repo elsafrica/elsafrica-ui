@@ -79,14 +79,15 @@ function createData(
 function DueAccounts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [notification, setNotification] = useState<Notification>()
+  const [notification, setNotification] = useState<Notification>();
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
   const { isAuthorized } = useAuthorize(authToken);
   const axios = AxiosInstance.initInstance(authToken);
 
-  const fetchProducts = async (currentPage: number, rowsPerPage: number) : Promise<{
+  const fetchProducts = async (currentPage: number, rowsPerPage: number, searchValue?: string) : Promise<{
 		users: Array<any>,
 		dataLength: number,
 	}> => {
@@ -94,6 +95,7 @@ function DueAccounts() {
 			params: {
 				pageNum: currentPage,
 				rowsPerPage,
+        searchValue
 			}
 		})).data;
 		
@@ -101,8 +103,8 @@ function DueAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'due', currentPage, rowsPerPage],
-		queryFn: () => fetchProducts(currentPage, rowsPerPage),
+		queryKey: [ 'due', currentPage, rowsPerPage, searchValue],
+		queryFn: () => fetchProducts(currentPage, rowsPerPage, searchValue),
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error.response) {
         setNotification({
@@ -262,6 +264,7 @@ function DueAccounts() {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+  const onSearchChange = (value: string) => setSearchValue(value);
 
   if(!isAuthorized) return <Loader />;
 
@@ -295,6 +298,8 @@ function DueAccounts() {
         confirmPayment={confirmPayment}
         accruePayment={accruePayment}
         activate={activate}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
         broadcastMessage={broadcastMessage}
       />
       <Snackbar

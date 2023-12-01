@@ -109,13 +109,14 @@ function AccruedAccounts() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [notification, setNotification] = useState<Notification>();
   const [userId, setUserId] = useState<string>();
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
   const { isAuthorized } = useAuthorize(authToken);
   const axios = AxiosInstance.initInstance(authToken);
 
-  const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
+  const fetchCustomers = async (currentPage: number, rowsPerPage: number, searchValue?: string) : Promise<{
 		users: Array<any>,
 		dataLength: number,
 	}> => {
@@ -123,6 +124,7 @@ function AccruedAccounts() {
 			params: {
 				pageNum: currentPage,
 				rowsPerPage,
+        searchValue,
 			}
 		})).data;
 		
@@ -130,8 +132,8 @@ function AccruedAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'accrued', currentPage, rowsPerPage],
-		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+		queryKey: [ 'accrued', currentPage, rowsPerPage, searchValue],
+		queryFn: () => fetchCustomers(currentPage, rowsPerPage, searchValue),
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error.response) {
         setNotification({
@@ -277,6 +279,8 @@ function AccruedAccounts() {
     }
   }
 
+  const onSearchChange = (value: string) => setSearchValue(value);
+
   if(!isAuthorized) return <Loader />;
 
   return (
@@ -301,6 +305,7 @@ function AccruedAccounts() {
         columns={columns}
         rows={rows}
         rowsPerPage={rowsPerPage}
+        searchValue={searchValue}
         count={data?.dataLength || rows.length}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
@@ -308,6 +313,7 @@ function AccruedAccounts() {
         sendEmail={sendMessage}
         confirmPayment={setId}
         activate={activate}
+        onSearchChange={onSearchChange}
         broadcastMessage={broadcastMessage}
       />
       <Modal

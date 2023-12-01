@@ -79,14 +79,15 @@ function createData(
 function OverdueAccounts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [notification, setNotification] = useState<Notification>()
+  const [notification, setNotification] = useState<Notification>();
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
   const { isAuthorized } = useAuthorize(authToken);
   const axios = AxiosInstance.initInstance(authToken);
 
-  const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
+  const fetchCustomers = async (currentPage: number, rowsPerPage: number, searchValue?: string) : Promise<{
 		users: Array<any>,
 		dataLength: number,
 	}> => {
@@ -94,6 +95,7 @@ function OverdueAccounts() {
 			params: {
 				pageNum: currentPage,
 				rowsPerPage,
+        searchValue,
 			}
 		})).data;
 		
@@ -101,8 +103,8 @@ function OverdueAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'overdue', currentPage, rowsPerPage],
-		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+		queryKey: [ 'overdue', currentPage, rowsPerPage, searchValue],
+		queryFn: () => fetchCustomers(currentPage, rowsPerPage, searchValue),
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error.response) {
         setNotification({
@@ -235,6 +237,7 @@ function OverdueAccounts() {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+  const onSearchChange = (value: string) => setSearchValue(value);
 
   const activate = async (id: string, activationFlag: boolean) => {
     try {
@@ -288,6 +291,7 @@ function OverdueAccounts() {
         columns={columns}
         rows={rows}
         rowsPerPage={rowsPerPage}
+        searchValue={searchValue}
         count={data?.dataLength || rows.length}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
@@ -296,6 +300,7 @@ function OverdueAccounts() {
         confirmPayment={confirmPayment}
         accruePayment={accruePayment}
         activate={activate}
+        onSearchChange={onSearchChange}
         broadcastMessage={broadcastMessage}
       />
       <Snackbar

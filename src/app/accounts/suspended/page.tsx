@@ -79,14 +79,15 @@ function createData(
 function SuspendedAccounts() {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [notification, setNotification] = useState<Notification>()
+  const [notification, setNotification] = useState<Notification>();
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
   const { isAuthorized } = useAuthorize(authToken);
   const axios = AxiosInstance.initInstance(authToken);
 
-  const fetchCustomers = async (currentPage: number, rowsPerPage: number) : Promise<{
+  const fetchCustomers = async (currentPage: number, rowsPerPage: number, searchValue?: string) : Promise<{
 		users: Array<any>,
 		dataLength: number,
 	}> => {
@@ -94,6 +95,7 @@ function SuspendedAccounts() {
 			params: {
 				pageNum: currentPage,
 				rowsPerPage,
+        searchValue,
 			}
 		})).data;
 		
@@ -101,8 +103,8 @@ function SuspendedAccounts() {
 	}
 
 	const { isLoading, isError, data } = useQuery({
-		queryKey: [ 'suspended', currentPage, rowsPerPage],
-		queryFn: () => fetchCustomers(currentPage, rowsPerPage),
+		queryKey: [ 'suspended', currentPage, rowsPerPage, searchValue],
+		queryFn: () => fetchCustomers(currentPage, rowsPerPage, searchValue),
     onError: (error: AxiosError<AxiosErrorData>) => {
       if (error.response) {
         setNotification({
@@ -184,6 +186,7 @@ function SuspendedAccounts() {
   }
 
   const handleNotificationClose = () => setNotification(undefined);
+  const onSearchChange = (value: string) => setSearchValue(value);
 
   if(!isAuthorized) return <Loader />;
 
@@ -209,12 +212,14 @@ function SuspendedAccounts() {
         columns={columns}
         rows={rows}
         rowsPerPage={rowsPerPage}
+        searchValue={searchValue}
         count={data?.dataLength || rows.length}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}
         sendEmail={sendMessage}
         confirmPayment={confirmPayment}
+        onSearchChange={onSearchChange}
       />
       <Snackbar
         autoHideDuration={6000}
