@@ -8,6 +8,7 @@ interface Context {
   authToken: string;
   user: User;
   qrCode: string;
+  isWAConnected: boolean;
 }
 
 interface ContextUpdater {
@@ -24,7 +25,8 @@ export const Context = React.createContext<Context>({
     email: '',
     phoneNo: '',
   },
-  qrCode: ''
+  qrCode: '',
+  isWAConnected: false,
 });
 export const ContextUpdater = React.createContext<ContextUpdater>({
   updateAuthToken: (token) => {},
@@ -45,6 +47,7 @@ const ContextProvider = ({ children } : { children: React.ReactNode }) => {
     email: '',
     phoneNo: '',
   });
+  const [isWAConnected, setIsWAConnected] = useState<boolean>(false);
 
   const updateAuthToken = (token: string) => {
     localStorage.setItem('authToken', token);
@@ -66,6 +69,8 @@ const ContextProvider = ({ children } : { children: React.ReactNode }) => {
       updateQRCode(payload.qrCode);
     });
 
+    socket.on('wa_client_connected', () => setIsWAConnected(true));
+
     return () => {
       socket.on('get_qr_code', (payload: any) => {
         updateQRCode(payload.qrCode);
@@ -75,7 +80,7 @@ const ContextProvider = ({ children } : { children: React.ReactNode }) => {
 
   
   return (
-    <Context.Provider value={{ socket, authToken, user, qrCode }}>
+    <Context.Provider value={{ socket, authToken, user, qrCode, isWAConnected }}>
       <ContextUpdater.Provider value={{ updateUser, updateAuthToken, updateQRCode }}>
         {children}
       </ContextUpdater.Provider>
