@@ -110,6 +110,7 @@ function AccruedAccounts() {
   const [notification, setNotification] = useState<Notification>();
   const [userId, setUserId] = useState<string>();
   const [searchValue, setSearchValue] = useState<string>('');
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
@@ -161,6 +162,8 @@ function AccruedAccounts() {
   )) || [];
 
   const sendMessage = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
         id,
@@ -183,10 +186,14 @@ function AccruedAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
   const broadcastMessage = async () => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/broadcast_status_message`, {
         status: 'accrued',
@@ -208,6 +215,8 @@ function AccruedAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
@@ -216,6 +225,8 @@ function AccruedAccounts() {
   const handleNotificationClose = () => setNotification(undefined);
 
   const activate = async (id: string, activationFlag: boolean) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/activate`, {
         id,
@@ -240,6 +251,7 @@ function AccruedAccounts() {
         message: error.message,
       });
     } finally {
+      setIsRequesting(false);
       queryClient.invalidateQueries({ queryKey: ['accrued'] });
     }
   }
@@ -247,6 +259,8 @@ function AccruedAccounts() {
   const onCloseModal = () => setUserId(undefined);
 
   const onSubmit = async (values: FormikValues, helpers: FormikHelpers<FormikValues>) => {
+    setIsRequesting(true);
+
     try {
       const { data } = await axios.patch(`${BASE_URL}/customers/deduct_accrued_debt`, Object.assign(values, { id: userId }));
       setNotification({
@@ -274,6 +288,7 @@ function AccruedAccounts() {
         message: error.message,
       });
     } finally {
+      setIsRequesting(false);
       setUserId(undefined);
       queryClient.invalidateQueries(['accrued']);
     }
@@ -307,6 +322,7 @@ function AccruedAccounts() {
         rowsPerPage={rowsPerPage}
         searchValue={searchValue}
         count={data?.dataLength || rows.length}
+        isRequesting={isRequesting}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}

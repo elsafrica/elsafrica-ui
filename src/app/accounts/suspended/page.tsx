@@ -81,6 +81,7 @@ function SuspendedAccounts() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [notification, setNotification] = useState<Notification>();
   const [searchValue, setSearchValue] = useState<string>('');
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
@@ -132,6 +133,8 @@ function SuspendedAccounts() {
   )) || [];
 
   const sendMessage = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
         id,
@@ -154,10 +157,14 @@ function SuspendedAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
   const confirmPayment = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accept_payment`, {
         id,
@@ -181,7 +188,8 @@ function SuspendedAccounts() {
         message: error.message,
       });
     } finally {
-      queryClient.invalidateQueries({ queryKey: ['suspended'] })
+      setIsRequesting(false);
+      queryClient.invalidateQueries({ queryKey: ['suspended'] });
     }
   }
 
@@ -214,6 +222,7 @@ function SuspendedAccounts() {
         rowsPerPage={rowsPerPage}
         searchValue={searchValue}
         count={data?.dataLength || rows.length}
+        isRequesting={isRequesting}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}

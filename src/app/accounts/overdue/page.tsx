@@ -81,6 +81,7 @@ function OverdueAccounts() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [notification, setNotification] = useState<Notification>();
   const [searchValue, setSearchValue] = useState<string>('');
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
@@ -157,6 +158,8 @@ function OverdueAccounts() {
   }
 
   const broadcastMessage = async () => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/broadcast_status_message`, {
         status: 'overdue',
@@ -178,10 +181,14 @@ function OverdueAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
   const confirmPayment = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accept_payment`, {
         id,
@@ -205,11 +212,14 @@ function OverdueAccounts() {
         message: error.message,
       });
     } finally {
+      setIsRequesting(false);
       queryClient.invalidateQueries({ queryKey: ['overdue'] });
     }
   }
 
   const accruePayment = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accrue_payment`, {
        id
@@ -232,6 +242,7 @@ function OverdueAccounts() {
         message: error.message,
       });
     } finally {
+      setIsRequesting(false);
       queryClient.invalidateQueries({ queryKey: ['overdue'] })
     }
   }
@@ -240,6 +251,8 @@ function OverdueAccounts() {
   const onSearchChange = (value: string) => setSearchValue(value);
 
   const activate = async (id: string, activationFlag: boolean) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/activate`, {
         id,
@@ -264,6 +277,8 @@ function OverdueAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
@@ -293,6 +308,7 @@ function OverdueAccounts() {
         rowsPerPage={rowsPerPage}
         searchValue={searchValue}
         count={data?.dataLength || rows.length}
+        isRequesting={isRequesting}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}

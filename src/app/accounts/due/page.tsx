@@ -81,6 +81,7 @@ function DueAccounts() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [notification, setNotification] = useState<Notification>();
   const [searchValue, setSearchValue] = useState<string>('');
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
@@ -131,6 +132,8 @@ function DueAccounts() {
   )) || [];
 
   const sendMessage = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/send_message`, {
         id,
@@ -153,10 +156,14 @@ function DueAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
   const broadcastMessage = async () => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.post(`${BASE_URL}/messages/broadcast_status_message`, {
         status: 'due',
@@ -178,10 +185,14 @@ function DueAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
   const confirmPayment = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accept_payment`, {
        id
@@ -204,11 +215,14 @@ function DueAccounts() {
         message: error.message,
       });
     } finally {
+      setIsRequesting(false);
       queryClient.invalidateQueries({ queryKey: ['due'] });
     }
   }
 
   const accruePayment = async (id: string) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/accrue_payment`, {
        id
@@ -232,10 +246,14 @@ function DueAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
   const activate = async (id: string, activationFlag: boolean) => {
+    setIsRequesting(true);
+
     try {
       const { status, data } = await axios.patch(`${BASE_URL}/customers/activate`, {
         id,
@@ -260,6 +278,8 @@ function DueAccounts() {
         status: 'error',
         message: error.message,
       });
+    } finally {
+      setIsRequesting(false);
     }
   }
 
@@ -291,6 +311,7 @@ function DueAccounts() {
         rows={rows}
         rowsPerPage={rowsPerPage}
         count={data?.dataLength || rows.length}
+        isRequesting={isRequesting}
         setRowsPerPage={setRowsPerPage}
         page={currentPage}
         setPageNum={setCurrentPage}
