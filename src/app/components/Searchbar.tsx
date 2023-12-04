@@ -8,10 +8,12 @@ const Searchbar = ({
   label,
   value,
   onChange,
+  onClearSearch,
 } : {
   label: string,
   value?: string,
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  onClearSearch: () => void,
 }) => {
   return (
     <TextField
@@ -23,7 +25,7 @@ const Searchbar = ({
           <InputAdornment position="end">
             { 
               value ? 
-                <IconButton><Close /></IconButton>
+                <IconButton onClick={onClearSearch}><Close /></IconButton>
                 : <Search/>
             }
           </InputAdornment>
