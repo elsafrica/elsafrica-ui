@@ -28,6 +28,7 @@ const Table = ({
   rowsPerPage,
   isLoading,
   searchValue,
+  isRequesting,
   setRowsPerPage,
   setPageNum,
   sendEmail,
@@ -46,6 +47,7 @@ const Table = ({
   rowsPerPage: number,
   isLoading: boolean,
   searchValue?: string,
+  isRequesting?: boolean,
   setRowsPerPage: Dispatch<SetStateAction<number>>,
   setPageNum: Dispatch<SetStateAction<number>>,
   sendEmail?: (id: string) => void,
@@ -94,11 +96,11 @@ const Table = ({
       case 'amount':
         return column.format && column.format(Number(value))
       case 'ack_payment':
-        return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm</Button>
+        return <Button disabled={isRequesting} startIcon={isRequesting ? <CircularProgress size='1rem' /> : undefined} variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='success' onClick={() =>{ if(confirmPayment) confirmPayment(data?.userId || '') }}>Confirm</Button>
       case 'accrue':
-        return <Button variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='warning' onClick={() =>{ if(accruePayment) accruePayment(data?.userId || '') }}>Accrue</Button>
+        return <Button disabled={isRequesting} startIcon={isRequesting ? <CircularProgress size='1rem' /> : undefined} variant='contained' size='small' sx={{ fontSize: '0.7rem' }} color='warning' onClick={() =>{ if(accruePayment) accruePayment(data?.userId || '') }}>Accrue</Button>
       case 'send_email':
-        return <Button startIcon={<WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send</Button>
+        return <Button disabled={isRequesting} startIcon={isRequesting ? <CircularProgress size='1rem'/> : <WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(sendEmail) sendEmail(data?.userId || '')}}>Send</Button>
       case 'isDisconnected':
         return <Switch color='error' size='small' onClick={() => { if(activate) activate(data?.userId || '', !switchValue) }} checked={switchValue} onChange={() => {}} />
       case 'actions':
@@ -124,6 +126,7 @@ const Table = ({
   }
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => onSearchChange && onSearchChange(e.target.value);
+  const onClearSearch = () => onSearchChange && onSearchChange('');
   
   return (
     <Paper sx={{ width: '95%', overflow: 'hidden', margin: '1rem auto' }} elevation={5}>
@@ -131,10 +134,10 @@ const Table = ({
           <Box display='flex' alignItems='end' px='1rem'>
             {
               broadcastMessage && typeof broadcastMessage === 'function' &&
-              <Button startIcon={<WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(broadcastMessage) broadcastMessage()}}>Send To Many</Button>
+              <Button disabled={isRequesting} startIcon={isRequesting ? <CircularProgress size='1rem'/> : <WhatsApp />} size='small' variant='contained' sx={{ fontSize: '0.7rem' }} color='whatsapp' onClick={() => { if(broadcastMessage) broadcastMessage()}}>Send To Many</Button>
             }
           </Box>
-          <Searchbar value={searchValue} label='Search by name' onChange={onChange} />
+          <Searchbar value={searchValue} label='Search by name' onClearSearch={onClearSearch} onChange={onChange} />
         </Box>
         {
           isLoading ?
