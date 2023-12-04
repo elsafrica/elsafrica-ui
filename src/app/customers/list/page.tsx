@@ -451,7 +451,6 @@ export default function CustomerAccounts() {
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="lastName" label='Customer Last Name' required />
                     <TelTextField value={values.phone1} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone1" label='Primary Phone' required />
                     <TelTextField value={values.phone2} setFieldValue={setFieldValue} sx={{ width: { md: '48%', lg: '48%' }}} name="phone2" label='Secondary Phone' />
-                    <TextField sx={{ width: { md: '100%', lg: '100%' }}} name="email" label='Email' />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="location" label='Location/Apartment' required />
                     <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="ip" label='IP Address' required />
                     <Select
