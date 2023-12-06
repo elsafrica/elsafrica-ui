@@ -16,6 +16,7 @@ import { Alert, Snackbar } from '@mui/material';
 import { Context } from '@/app/providers/context';
 import { useAuthenticate } from '@/app/helpers/useAuth';
 import Loader from '@/app/components/Loader';
+import Link from 'next/link';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -203,6 +204,9 @@ const NewCustomer = () => {
                       { values.package === 'Custom' && <TextField sx={{ width: { md: '48%', lg: '48%' }}} name="customAmount" label='Custom Amount' required />}
                     </Box>
                     <Button variant='contained' type='submit' sx={{ margin: { xs: '1rem 0', md: '0 2rem'} }}>Onboard Customer</Button>
+                    <Link href='/assets/new' style={{ textDecoration: 'none', color: 'inherit', display: 'block', marginTop: '1rem' }}>
+                      <Button variant='contained' type='button' color='info' sx={{ margin: { xs: '1rem 0', md: '0 2rem'} }}>Create Asset</Button>
+                    </Link>
                   </Form>
                 )
               }
