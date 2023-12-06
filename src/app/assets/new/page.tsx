@@ -17,7 +17,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Snackbar from '@mui/material/Snackbar';
 import { Context } from '@/app/providers/context';
-import { useAuthorize } from '@/app/helpers/useAuth';
+import { useAuthenticate } from '@/app/helpers/useAuth';
 import AxiosInstance  from '@/app/services/axios';
 import Loader from '@/app/components/Loader';
 import Select from '@/app/components/Select';
@@ -37,7 +37,7 @@ interface FormikValues {
 
 const NewAsset = () => {
   const { authToken } = useContext(Context);
-  const { isAuthorized } = useAuthorize(authToken);
+  const { isAuthenticated } = useAuthenticate(authToken);
   const axios = AxiosInstance.initInstance(authToken);
 
   const [notification, setNotification] = useState<Notification>();
@@ -100,7 +100,7 @@ const NewAsset = () => {
 
   const handleNotificationClose = () => setNotification(undefined);
 
-  if(!isAuthorized) return <Loader />;
+  if(!isAuthenticated) return <Loader />;
 
   return (
     <>
