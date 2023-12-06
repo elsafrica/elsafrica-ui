@@ -77,7 +77,7 @@ const NewCustomer = () => {
     ip: string()
       .test({
         name: 'ip_address_test',
-        test: (value: string | undefined) => /^(\.\d\d\d$)|(\.\d\d$)/.test(value || ''),
+        test: (value: string | undefined) => /^(\.\d\d\d$)|(\.\d\d$)|(\.\d$)/.test(value || ''),
         message: 'The value you have entered is not a valid IP address, use the format .72 or .192'
       })
       .required('Please fill out this field.'),
