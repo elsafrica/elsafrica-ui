@@ -1,12 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
-    REACT_APP_BASE_URL: 'https://elsafrica.net/api',
-    SOCKET_BASE_URL: 'https://elsafrica.net',
+    REACT_APP_BASE_URL: 'https://elsafrica.online/api',
+    SOCKET_BASE_URL: 'https://elsafrica.online',
   },
   images: {
     remotePatterns: [{
-      hostname: 'elsafrica.net',
+      hostname: 'elsafrica.online',
       protocol: 'https',
       port: ''
     }]
