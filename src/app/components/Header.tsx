@@ -17,6 +17,7 @@ import MenuListComposition from './MenuList';
 import { ContextUpdater } from '../providers/context';
 import { Bubblegum_Sans as Bubblegum } from 'next/font/google'
 import Drawer from './Drawer';
+import Image from 'next/image';
 
 interface Link {
   name: string;
@@ -144,25 +145,14 @@ const Header = () => {
     }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+          <Box
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontWeight: 1200,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-              fontSize: '2rem',
-              fontFamily: '__Bubblegum_Sans_56bc0b, __Bubblegum_Sans_Fallback_56bc0b',
             }}
-            className={montserrat.className}
           >
-            Elsafrica Networks
-          </Typography>
+            <Image src='/img/logo.png' width={75} height={45} alt='logo' />
+          </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
@@ -181,26 +171,16 @@ const Header = () => {
               pages={pages}
             />
           </Box>
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+          <Box
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontWeight: 1200,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-              fontSize: '2rem',
-              fontFamily: '__Bubblegum_Sans_56bc0b, __Bubblegum_Sans_Fallback_56bc0b',
+              margin: 'auto',
+              flex: 1.5
             }}
-            className={montserrat.className}
           >
-            Elsafrica Networks
-          </Typography>
+            <Image src='/img/logo.png' alt='logo' width={75} height={45} style={{ maxWidth: '100%' }} />
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', paddingRight: '2rem' } }} justifyContent='flex-end'>
             {pages.map((page) => (
               <MenuListComposition key={page.name} parentName={page.name} linkContains={page.linkContains} list={page.items}/>
