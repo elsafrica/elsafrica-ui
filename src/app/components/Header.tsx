@@ -151,7 +151,7 @@ const Header = () => {
               display: { xs: 'none', md: 'flex' },
             }}
           >
-            <Image src='/img/logo.png' width={75} height={45} alt='logo' />
+            <Image src='/img/logo_2.png' width={130} height={80} alt='logo' />
           </Box>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -179,7 +179,7 @@ const Header = () => {
               flex: 1.5
             }}
           >
-            <Image src='/img/logo.png' alt='logo' width={75} height={45} style={{ maxWidth: '100%' }} />
+            <Image src='/img/logo_2.png' alt='logo' width={120} height={75} style={{ maxWidth: '100%' }} />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', paddingRight: '2rem' } }} justifyContent='flex-end'>
             {pages.map((page) => (
