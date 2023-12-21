@@ -2,7 +2,7 @@ type ColId =
   'name' | 'phone1' | 'phone2' | 'location' | 'ip' | 'created_at' | 'last_payment' | 
   'total_earnings' | 'bill' | 'status' | 'send_email' | 'ack_payment' | 'isDisconnected' | 
   'actions' | 'amount' | 'mac_address' | 'user_name' | 'purpose' |
-  'assetPrice' | 'isForCompany' | 'accrue'
+  'assetPrice' | 'isForCompany' | 'accrue' | 'email'
 
 export interface Column {
   id: ColId;
@@ -39,6 +39,7 @@ export interface Row {
   isForCompany?: string;
   assetPrice?: string;
   package?: string;
+  userType?: string;
 }
 
 export interface AxiosErrorData {
