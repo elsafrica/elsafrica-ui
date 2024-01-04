@@ -19,15 +19,18 @@ interface FieldProps {
   sx?: Object;
   setFieldValue?: (fieldName: string, value: string) => void;
   value?: string;
+  size?: 'small' | 'medium'
 };
 
 const TextField = (props : FieldHookConfig<string> & FieldProps) => {
   const [field, meta] = useField(props);
   return (
     <MuiTextField
+      size={props.size || 'medium'}
       sx={{ marginBottom: '1rem', ...props.sx }}
       error={Boolean(meta.touched) && Boolean(meta.error)}
       label={props.label}
+      placeholder={props.placeholder}
       required={Boolean(props.required)}
       helperText={meta.touched && meta.error}
       { ...field }
