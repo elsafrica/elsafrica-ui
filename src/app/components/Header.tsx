@@ -111,6 +111,20 @@ const Header = () => {
           to: '/masters/packages/list'
         },
       ]
+    },
+    {
+      name: 'Invoice',
+      linkContains: 'invoice',
+      items: [
+        {
+          name: 'Create Invoice',
+          to: '/invoice/create'
+        },
+        {
+          name: 'List Invoices',
+          to: '/invoice/list'
+        },
+      ]
     }
   ];
   const settings = [

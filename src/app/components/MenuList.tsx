@@ -9,6 +9,7 @@ import MenuList from '@mui/material/MenuList';
 import { lightGreen } from '@mui/material/colors';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { colors } from '@mui/material';
 
 interface Link {
   name: string;
@@ -75,7 +76,7 @@ export default function MenuListComposition({
         onMouseLeave={handleToggle}
         color="inherit"
         sx={{
-          color: pathname.includes(linkContains) ? lightGreen[100] : '#fff'
+          color: pathname.includes(linkContains) ? lightGreen[100] : colors.grey[700]
         }}
       >
         {parentName}
