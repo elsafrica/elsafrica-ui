@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import MuiDrawer from '@mui/material/Drawer'
 import List from '@mui/material/List'
 import ListSubheader from '@mui/material/ListSubheader'
@@ -9,6 +9,8 @@ import Divider from '@mui/material/Divider'
 import Link from 'next/link'
 import { AccountBox, AccountBalanceWallet, Inventory, WhatsApp, Devices } from '@mui/icons-material'
 import { usePathname } from 'next/navigation'
+import { useAuthorize } from '../helpers/useAuth'
+import { Context } from '../providers/context'
 
 interface Link {
   name: string;
@@ -31,6 +33,8 @@ const Drawer = ({
   onClose: () => void,
 }) => {
   const pathname = usePathname();
+  const { authToken } = useContext(Context);
+  const { isSuperUser, isSubSuperUser } = useAuthorize(authToken);
   
   const renderListItemIcon = (linkName: string) : React.ReactNode => {
     switch (linkName.toLowerCase()) {
@@ -65,16 +69,35 @@ const Drawer = ({
               }
             >
               {
-                page.items.map((link: Link) => (
-                  <Link href={link.to} style={{ textDecoration: 'none', color: 'unset' }} key={link.to}>
-                    <ListItemButton selected={pathname.includes(link.to)}>
-                      <ListItemIcon>
-                        {renderListItemIcon(page.name)}
-                      </ListItemIcon>
-                      <ListItemText>{link.name}</ListItemText>
-                    </ListItemButton>
-                  </Link>
-                ))
+                page.items.map((link: Link) => {
+                  if(isSubSuperUser && link.to.includes('customer') && !link.to.includes('upload')) {
+                    return (
+                      <Link href={link.to} style={{ textDecoration: 'none', color: 'unset' }} key={link.to}>
+                        <ListItemButton selected={pathname.includes(link.to)}>
+                          <ListItemIcon>
+                            {renderListItemIcon(page.name)}
+                          </ListItemIcon>
+                          <ListItemText>{link.name}</ListItemText>
+                        </ListItemButton>
+                      </Link>
+                    )
+                  }
+
+                  if (isSuperUser) {
+                    return (
+                      <Link href={link.to} style={{ textDecoration: 'none', color: 'unset' }} key={link.to}>
+                        <ListItemButton selected={pathname.includes(link.to)}>
+                          <ListItemIcon>
+                            {renderListItemIcon(page.name)}
+                          </ListItemIcon>
+                          <ListItemText>{link.name}</ListItemText>
+                        </ListItemButton>
+                      </Link>
+                    )
+                  }
+
+                  return <></>
+                })
               }
             </List>
             { index < pages.length - 1 && <Divider /> }

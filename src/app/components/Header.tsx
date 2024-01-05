@@ -14,10 +14,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
 import MenuListComposition from './MenuList';
-import { ContextUpdater } from '../providers/context';
+import { Context, ContextUpdater } from '../providers/context';
 import { Bubblegum_Sans as Bubblegum } from 'next/font/google'
 import Drawer from './Drawer';
 import Image from 'next/image';
+import { useAuthorize } from '../helpers/useAuth';
 
 interface Link {
   name: string;
@@ -136,6 +137,8 @@ const Header = () => {
   const { updateAuthToken } = useContext(ContextUpdater);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const { authToken } = useContext(Context);
+  const { isSuperUser, isSubSuperUser } = useAuthorize(authToken);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -196,9 +199,17 @@ const Header = () => {
             <Image src='/img/logo_2.png' alt='logo' width={120} height={75} style={{ maxWidth: '100%' }} />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', paddingRight: '2rem' } }} justifyContent='flex-end'>
-            {pages.map((page) => (
-              <MenuListComposition key={page.name} parentName={page.name} linkContains={page.linkContains} list={page.items}/>
-            ))}
+            {pages.map((page) => {
+              if (isSubSuperUser && page.linkContains.includes('customer')) {
+                return (<MenuListComposition key={page.name} parentName={page.name} linkContains={page.linkContains} list={page.items}/>);
+              }
+
+              if (isSuperUser) {
+                return (<MenuListComposition key={page.name} parentName={page.name} linkContains={page.linkContains} list={page.items}/>);
+              }
+
+              return <></>;
+            })}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>

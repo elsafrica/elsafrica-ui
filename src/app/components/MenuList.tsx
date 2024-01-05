@@ -6,7 +6,6 @@ import Paper from '@mui/material/Paper';
 import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
-import { lightGreen } from '@mui/material/colors';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { colors } from '@mui/material';
@@ -76,7 +75,8 @@ export default function MenuListComposition({
         onMouseLeave={handleToggle}
         color="inherit"
         sx={{
-          color: pathname.includes(linkContains) ? lightGreen[100] : colors.grey[700]
+          color: pathname.includes(linkContains) ? colors.blue[500] : colors.grey[700],
+          fontWeight: 'bold'
         }}
       >
         {parentName}
@@ -111,7 +111,7 @@ export default function MenuListComposition({
                   onKeyDown={handleListKeyDown}
                 >
                   {
-                    list.map((item: Link) => <Link key={item.to} href={item.to} style={{ textDecoration: 'none', color: 'unset' }}><MenuItem sx={{ color: pathname.includes(item.to) ? lightGreen[500] : 'black' }} onClick={handleClose} >{item.name}</MenuItem></Link>)
+                    list.map((item: Link) => <Link key={item.to} href={item.to} style={{ textDecoration: 'none', color: 'unset' }}><MenuItem sx={{ color: pathname.includes(item.to) ? colors.lightGreen[500] : 'black' }} onClick={handleClose} >{item.name}</MenuItem></Link>)
                   }
                 </MenuList>
               </ClickAwayListener>
