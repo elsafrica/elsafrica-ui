@@ -17,15 +17,34 @@ export const useAuthenticate = (token: string) => {
 }
 
 export const useAuthorize = (token: string) => {
-  const [isAuthorized, setIsAuthorized] = useState<boolean>();
+  const [isAuthorized, setIsAuthorized] = useState<{
+    isSuperUser?: boolean,
+    isSubSuperUser?: boolean,
+  }>({
+    isSuperUser: false,
+    isSubSuperUser: false,
+  });
   const router = useRouter();
   useEffect(() => {
-    if(!token || decodeToken(token).isExpired || !decodeToken(token).isSuperUser) {
+    const decoded = decodeToken(token);
+    if(!token || decoded.isExpired) {
       router.push('/customers/new');
+    }
+
+    if (decoded.isSubSuperUser) {
+      router.push('/customers/list');
+
+      return setIsAuthorized({
+        isSubSuperUser: decoded.isSubSuperUser,
+        isSuperUser: decoded.isSuperUser
+      });
     } else {
-      setIsAuthorized(true);
+      setIsAuthorized({
+        isSubSuperUser: decoded.isSubSuperUser,
+        isSuperUser: decoded.isSuperUser
+      });
     }
   }, [token, router]);
 
-  return { isAuthorized };
+  return isAuthorized;
 }
