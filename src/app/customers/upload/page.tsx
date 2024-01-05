@@ -14,7 +14,7 @@ import Select from '@/app/components/Select';
 import { Notification } from '@/app/types/notification';
 import { Alert, Snackbar } from '@mui/material';
 import { Context } from '@/app/providers/context';
-import { useAuthenticate } from '@/app/helpers/useAuth';
+import { useAuthenticate, useAuthorize } from '@/app/helpers/useAuth';
 import Loader from '@/app/components/Loader';
 import Dropzone from '@/app/components/Dropzone';
 
@@ -24,7 +24,7 @@ const NewCustomer = () => {
   const [notification, setNotification] = useState<Notification>();
 
   const { authToken } = useContext(Context);
-  const { isAuthenticated } = useAuthenticate(authToken);
+  const { isSuperUser } = useAuthorize(authToken);
 
   const axios = AxiosInstance.initInstance(authToken);
 
@@ -60,7 +60,7 @@ const NewCustomer = () => {
 
   const handleNotificationClose = () => setNotification(undefined);
 
-  if(!isAuthenticated) return <Loader />;
+  if(!isSuperUser) return <Loader />;
 
   return (
     <>

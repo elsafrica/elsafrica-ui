@@ -34,7 +34,7 @@ export default function CustomerAccounts() {
   const { authToken, qrCode, isWAConnected } = useContext(Context);
   const { updateQRCode } = useContext(ContextUpdater);
   const axios = AxiosInstance.initInstance(authToken);
-  const { isAuthorized } = useAuthorize(authToken);
+  const { isSuperUser } = useAuthorize(authToken);
 
   const handleNotificationClose = () => setNotification(undefined);
 
@@ -132,7 +132,7 @@ export default function CustomerAccounts() {
   const onTextAreaChange = (value: string) => setMessage(value);
   const onAccept = (file?: File) => setFile(file);
 
-  if(!isAuthorized) return <Loader />;
+  if(!isSuperUser) return <Loader />;
 
   return (
     <>

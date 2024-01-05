@@ -14,7 +14,7 @@ import { Notification } from '@/app/types/notification';
 import Modal from '@/app/components/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import { Button, CircularProgress, DialogActions, DialogContent } from '@mui/material';
+import { Button, DialogActions, DialogContent } from '@mui/material';
 import TextField, { TelTextField } from '@/app/components/TextField';
 import Select from '@/app/components/Select';
 import { Context } from '@/app/providers/context';
@@ -139,7 +139,7 @@ export default function CustomerAccounts() {
   const [update, setUpdate] = useState<FormikValues>();
 
   const { authToken } = useContext(Context);
-  const { isAuthorized } = useAuthorize(authToken);
+  const { isSubSuperUser } = useAuthorize(authToken);
 
   const queryClient = useQueryClient();
   const axios = AxiosInstance.initInstance(authToken);
@@ -322,7 +322,7 @@ export default function CustomerAccounts() {
   const onCloseUpdate = () => setUpdate(undefined);
   const onSearchChange = (value: string) => setSearchValue(value);
 
-  if(!isAuthorized) {
+  if(!isSubSuperUser) {
     return (
       <Loader />
     )

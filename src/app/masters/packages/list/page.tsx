@@ -74,7 +74,7 @@ export default function CustomerAccounts() {
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
-  const { isAuthorized } = useAuthorize(authToken);
+  const { isSuperUser } = useAuthorize(authToken);
 
   const axios = AxiosInstance.initInstance(authToken);
 
@@ -186,7 +186,7 @@ export default function CustomerAccounts() {
   const onUpdate = (data?: Row) => setUpdate(data);
   const onCloseUpdate = () => setUpdate(undefined);
 
-  if(!isAuthorized) return <Loader />;
+  if(!isSuperUser) return <Loader />;
 
   return (
     <>

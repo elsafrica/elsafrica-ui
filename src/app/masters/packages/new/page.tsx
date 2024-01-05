@@ -26,7 +26,7 @@ const NewPackage = () => {
 
   const { authToken } = useContext(Context);
   const axios = AxiosInstance.initInstance(authToken);
-  const { isAuthorized } = useAuthorize(authToken);
+  const { isSuperUser } = useAuthorize(authToken);
 
   const validator = object({
     amount: string()
@@ -61,7 +61,7 @@ const NewPackage = () => {
 
   const handleNotificationClose = () => setNotification(undefined);
 
-  if(!isAuthorized) return <Loader />;
+  if(!isSuperUser) return <Loader />;
 
   return (
     <>

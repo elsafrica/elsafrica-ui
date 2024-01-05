@@ -216,10 +216,7 @@ export default function CustomerAccounts() {
       });
     }
   }
-
-  console.log((Number(data?.current) + 1));
   
-
   return (
     <>
       <Header />
