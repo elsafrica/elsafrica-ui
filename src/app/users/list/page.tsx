@@ -53,7 +53,7 @@ export default function CustomerAccounts() {
 
   const queryClient = useQueryClient();
   const { authToken } = useContext(Context);
-  const { isAuthorized } = useAuthorize(authToken);
+  const { isSuperUser } = useAuthorize(authToken);
   const axios = AxiosInstance.initInstance(authToken);
 
   const fetchAssets = async (currentPage: number, rowsPerPage: number) : Promise<{
@@ -156,7 +156,7 @@ export default function CustomerAccounts() {
   const onDelete = (id: string) => setDeleteId(id);
   const onCloseConfirm = () => setDeleteId(undefined);
 
-  if(!isAuthorized) return <Loader />;
+  if(!isSuperUser) return <Loader />;
 
   return (
     <>
