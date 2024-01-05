@@ -31,7 +31,7 @@ export const useAuthorize = (token: string) => {
       router.push('/customers/new');
     }
 
-    if (decoded.isSubSuperUser) {
+    if (decoded.isSubSuperUser && !decoded.isSuperUser) {
       router.push('/customers/list');
 
       return setIsAuthorized({
