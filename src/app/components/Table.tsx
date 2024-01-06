@@ -39,6 +39,7 @@ const Table = ({
   update,
   onSearchChange,
   broadcastMessage,
+  onRowClick,
 } : {
   columns: Array<Column>
   rows: Array<Row>,
@@ -58,6 +59,7 @@ const Table = ({
   update?: (data?: Row) => void,
   onSearchChange?: (value: string) => void,
   broadcastMessage?: () => void
+  onRowClick?: (values: any) => void
 }) => {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPageNum(newPage);
@@ -114,7 +116,7 @@ const Table = ({
             }
             {
               typeof setDelete === 'function' &&
-              <IconButton onClick={() => {setDelete(data?.userId || '')}}>
+              <IconButton onClick={(e) => { e.stopPropagation(); setDelete(data?.userId || '')}}>
                 <DeleteIcon sx={{ fontSize: '1.2rem' }} color='error'/>
               </IconButton>
             }
@@ -172,7 +174,7 @@ const Table = ({
                     {rows
                     .map((row) => {
                       return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
+                        <TableRow hover role="checkbox" tabIndex={-1} key={row.name} onClick={() => { if (onRowClick && typeof onRowClick === 'function') onRowClick(row.invoice)}}>
                           {columns.map((column) => {
                             const value = row[column.id];
                             return (
