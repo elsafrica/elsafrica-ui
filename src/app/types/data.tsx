@@ -13,6 +13,22 @@ export interface Column {
   format?: (value: number) => string;
 };
 
+type Item = { name: string, quantity: number, unit_cost: number };
+
+type Invoice = {
+  number: string,
+  date: string,
+  poNumber?: string,
+  dueDate: string,
+  to: string,
+  items: Item[],
+  notes?: string,
+  terms?: string,
+  tax?: number,
+  discount?: number,
+  shipping?: number
+};
+
 export interface Row {
   userId?: string,
   name: string;
@@ -40,6 +56,7 @@ export interface Row {
   assetPrice?: string;
   package?: string;
   userType?: string;
+  invoice?: Invoice;
 }
 
 export interface AxiosErrorData {

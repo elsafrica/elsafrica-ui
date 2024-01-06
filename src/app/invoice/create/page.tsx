@@ -21,6 +21,7 @@ import moment from 'moment';
 import { AxiosErrorData } from '@/app/types/data';
 import { AxiosError } from 'axios';
 import { useQuery } from 'react-query';
+import CustomDatePicker from '@/app/components/Datepicker';
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -77,14 +78,14 @@ export default function CustomerAccounts() {
       .required('This field is required.')
       .test({
         name: 'date_test',
-        test: (value: string = '') => moment(value, 'DD/MM/YY').isValid(),
+        test: (value: string = '') => moment(value).isValid(),
         message: 'The value you have entered is not a valid Date'
       }),
     poNumber: string(),
     dueDate: string()
       .test({
         name: 'due_date_test',
-        test: (value: string = '') => moment(value, 'DD/MM/YY').isValid(),
+        test: (value: string = '') => moment(value).isValid(),
         message: 'The value you have entered is not a valid Date'
       }),
     to: string()
@@ -202,6 +203,7 @@ export default function CustomerAccounts() {
       link.click();
       link.parentNode?.removeChild(link);
 
+      helpers.resetForm();
       } catch (error: any) {
       if (error.response) {
         return setNotification({
@@ -216,7 +218,9 @@ export default function CustomerAccounts() {
       });
     }
   }
-  
+
+  const currentNumber = Number(data?.current) + 1;
+
   return (
     <>
       <Header />
@@ -242,16 +246,16 @@ export default function CustomerAccounts() {
           <Card sx={{ maxWidth: '85%', margin: '0 auto 2rem', padding: '1rem 0' }}>
             <Formik
               initialValues={{
-                number: (Number(data?.current) + 1).toString().padStart(3, '0') || '001',
+                number: Number.isNaN(currentNumber) ? '001' : currentNumber.toString().padStart(3, '0'),
                 date: '',
                 poNumber: '',
                 dueDate: '',
                 to: '',
                 items: [{
                   id: 0,
-                  name: 'Hello world!',
-                  quantity: 1,
-                  unit_cost: 20
+                  name: '',
+                  quantity: 0,
+                  unit_cost: 0
                 }],
                 notes: '',
                 terms: '',
@@ -264,7 +268,7 @@ export default function CustomerAccounts() {
               enableReinitialize
             >
               {
-                ({ values, setFieldValue }) => (
+                ({ values, setFieldValue, isSubmitting }) => (
                   <Form>
                     <Box
                       display='flex'
@@ -279,7 +283,7 @@ export default function CustomerAccounts() {
                           label='Bill To'
                           size='small'
                           sx={{
-                            margin: '5rem 2rem 0'
+                            margin: '3.5rem 2rem 0'
                           }}
                         />
                       </Box>
@@ -306,15 +310,7 @@ export default function CustomerAccounts() {
                             margin: '0.5rem 0',
                           }}
                         />
-                        <TextField
-                          name='date'
-                          label='Date'
-                          placeholder='DD/MM/YY'
-                          size='small'
-                          sx={{
-                            margin: '0.5rem 0'
-                          }}
-                        />
+                        <CustomDatePicker currentValue={values.date} sx={{ maxWidth: '62%' }} label ='Date' onChange={(value) => setFieldValue('date', value?.toISOString())}/>
                         <TextField
                           name='poNumber'
                           label='PO Number'
@@ -323,20 +319,12 @@ export default function CustomerAccounts() {
                             margin: '0.5rem 0'
                           }}
                         />
-                        <TextField
-                          name='dueDate'
-                          label='Due Date'
-                          placeholder='DD/MM/YY'
-                          size='small'
-                          sx={{
-                            margin: '0.5rem 0'
-                          }}
-                        />
+                        <CustomDatePicker currentValue={values.dueDate} sx={{ maxWidth: '62%' }} label ='Due Date' onChange={(value) => setFieldValue('dueDate', value?.toISOString())}/>
                       </Box>
                     </Box>
                     <Box
                       display='flex'
-                      width='95%'
+                      width='92%'
                       borderRadius='8px'
                       margin='1rem auto 0'
                       sx={{ backgroundColor: '#000' }}
@@ -377,13 +365,13 @@ export default function CustomerAccounts() {
                     </Box>
                     
                     <Box
-                      width='97%'
+                      width='93%'
                       borderRadius='8px'
                       margin='0.5rem auto'
                     >
                       {
                         values.items.map((item: { id: number, name: string, quantity: number, unit_cost: number}) => (
-                          <Box key={item.id} display='flex' alignItems='center' justifyContent='space-between' marginTop='0.5rem'>
+                          <Box key={item.id} display='flex' alignItems='center' justifyContent='space-between' margin='0.5rem auto 0' width='100%'>
                             <OutlinedInput size='small' sx={{ flexBasis: '58.5%', fontSize: '0.8rem' }} value={item.name} placeholder='Name' onChange={(e) => onFieldChange(item, values.items, e, 1, setFieldValue)}/>
                             <OutlinedInput size='small' sx={{ flexBasis: '11.5%', fontSize: '0.8rem' }} value={item.quantity} placeholder='Quantity' onChange={(e) => onFieldChange(item, values.items, e, 2, setFieldValue)}/>
                             <OutlinedInput size='small' sx={{ flexBasis: '11.5%', fontSize: '0.8rem' }} value={`KSH ${item.unit_cost}`} prefix='KSH' placeholder='unit_cost' onChange={(e) => onFieldChange(item, values.items, e, 3, setFieldValue)}/>
@@ -395,7 +383,7 @@ export default function CustomerAccounts() {
                       <Button size='small' sx={{ margin: '0.75rem 0'}} startIcon={<PlusOneOutlined />} color='success' variant='contained' onClick={() => addItem(setFieldValue, values.items)}>Add Item</Button>
                     </Box>
                     <Box
-                      width='97%'
+                      width='92%'
                       borderRadius='8px'
                       margin='0.5rem auto'
                       display='flex'
@@ -460,7 +448,7 @@ export default function CustomerAccounts() {
                       </Box>
                     </Box>
                     <Box display='flex' alignItems='end' width='97%' margin='1.5rem auto 0' justifyContent='end'>
-                      <Button type='submit' variant='contained' color='info'>Generate Invoice</Button>
+                      <Button type='submit' disabled={isSubmitting} variant='contained' color='info'>Generate Invoice</Button>
                     </Box>
                   </Form>
                 )
